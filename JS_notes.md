@@ -62,7 +62,7 @@ Version: 1.0
 
 ### Data types
 
-* JavaScript has dynamic typing: we don't have to manually define the data type of the value stored in a variable. Instead, data types are determined automatically.
+* JavaScript has **dynamic typing**: we don't have to manually define the data type of the value stored in a variable. Instead, data types are determined automatically.
 * **In JavaScript, it is the value that has a type, not the variable**
 
 * Primitive data type
@@ -170,4 +170,121 @@ Version: 1.0
 * `if-else`
 * `switch`
 
-### 
+### Strict mode
+
+* Put `'use strict';` statement in the beginning of the `.js` file
+* Forbid to do certain things
+* Create visible errors
+
+***
+
+## Functions
+
+* Syntax
+
+  ```javascript
+  function funcName() {}
+  
+  // example
+  function calcAge1(birthYear) {
+      return 2023 - birthYear;
+  }
+  ```
+
+* Functions can be invoked before their declarations
+
+* Anonymous function
+
+  ```javascript
+  const funcName = function () {}
+  
+  // example
+  const calcAge2 = function (birthYear) {
+      return 2023 - birthYear;
+  }
+  ```
+
+  * Cannot be invoked before function expression
+
+* Arrow function
+
+  * A special form of anonymous function
+
+  ```javascript
+  const funcName = para => exp;	// without {}, we don't need to return the value explicitly
+  const funcName = (para1, para2) => {}		// with {}, we define the function in the traditional way
+  
+  // example
+  const calcAge3 = birthYear => 2023 - birthYear;
+  ```
+
+  * Helpful for one-line functions
+
+***
+
+## Data structure
+
+### Arrays
+
+* Syntax
+
+  * Literal syntax
+
+  ```javascript
+  const array = [element1, element2];
+  ```
+
+  * Object
+
+  ```javascript
+  const array = new Array(element1, element2);
+  ```
+
+* Can put values of different data types in one array
+
+* Basic operations
+
+  * `push`
+    * Add new element to the end of the array
+    * Return the length of the new array
+  * `unshift`
+    * Add new element to the start of the array
+    * Return the length of the new array
+  * `pop`
+    * Remove the last element of the array
+    * Return the removed element
+  * `shift`
+    * Removed the first element of the array
+    * Return the removed element
+  * `indexOf`
+    * Return the index of the element
+  * `includes`
+    * Check whether the element is included in the array
+
+### Objects
+
+* Map of JavaScript
+
+* Syntax
+
+  * Literal syntax
+
+  ```javascript
+  const obj = {
+      key1: value1,
+      key2: value2
+  }
+  ```
+
+* Basic operations
+
+  * Access a value
+    * `obj.key`
+    * `obj["key"]`
+      * The string can be an expression which holds the value of the string of the key name
+  * 
+
+***
+
+## OOP
+
