@@ -49,4 +49,48 @@ for (let i = 0; i < bills.length; i++) {
 }
 console.log(tips); */
 
-// challenge 7
+/* // challenge 7
+const mark = {
+    name: "Mark",
+    mass: 78,
+    height: 1.69,
+
+    calcBMI: function () {
+        this.bmi = this.mass / (this.height ** 2);
+        return this.bmi;
+    }
+};
+
+const john = {
+    name: "John",
+    mass: 92,
+    height: 1.95,
+
+    calcBMI: function () {
+        this.bmi = this.mass / (this.height ** 2);
+        return this.bmi;
+    }
+};
+
+mark.calcBMI();
+john.calcBMI();
+
+if (mark.bmi > john.bmi)
+    console.log(`${mark.name}'s BMI (${mark.bmi}) is higher than ${john.name}'s (${john.bmi})!`);
+else if (mark.bmi < john.bmi)
+    console.log(`${john.name}'s BMI (${john.bmi}) is higher than ${mark.name}'s (${mark.bmi})!`);
+else
+    console.log("Equal!"); */
+
+/* // Challenge 8 (with the context of challenge 6)
+function calcAverage(arr) {
+    let sum = 0;
+    for (let i = 0; i < arr.length; i++) {
+        sum += arr[i];
+    }
+    return sum / arr.length;
+}
+
+console.log(calcAverage(tips)); */
+
+// Challenge 9

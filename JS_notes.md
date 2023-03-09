@@ -10,6 +10,8 @@ Version: 1.0
 
 ## JavaScript Fundamentals
 
+### Introduction
+
 * Three pillars in web development
   * HTML - Content - Nouns
   * CSS - Style and layout - Adjectives
@@ -45,6 +47,12 @@ Version: 1.0
     * Put code in the `.js` files in the same folder of HTML files
     * Tag `<script src=""></script>` 
 
+### Strict mode
+
+* Put `'use strict';` statement in the beginning of the `.js` file
+* Forbid to do certain things
+* Create visible errors
+
 ### Variables and Values
 
 * `$` is allowed in the variable's name
@@ -63,6 +71,7 @@ Version: 1.0
 ### Data types
 
 * JavaScript has **dynamic typing**: we don't have to manually define the data type of the value stored in a variable. Instead, data types are determined automatically.
+
 * **In JavaScript, it is the value that has a type, not the variable**
 
 * Primitive data type
@@ -81,7 +90,7 @@ Version: 1.0
       * Syntax
 
         ```javascript
-        const str = `text ${varName1} text ${varName2}`;
+        const str = `text ${varName1} text ${expression}`;
         ```
 
       * Can also be used to create multiple line strings
@@ -103,7 +112,7 @@ Version: 1.0
     * Falsy values
       * Values are not exactly false but will become false when we try to convert them into a boolean
       * `0, "", undefined, null, NaN`
-    * Trythy values
+    * Truthy values
       * Other values
 
   * Undefined
@@ -120,11 +129,12 @@ Version: 1.0
 
     * Large integers than the Number type can hold
 
-* Object type
+* Class type
 
 * `typeof` operator
 
   * `typeof var` or `typeof value`
+  * Return a string
 
 * Type conversion and coercion
 
@@ -138,8 +148,8 @@ Version: 1.0
 
   * Coercion
 
-    * `+`: number converts to string implicitly
-    * `-`, `*`, `/`: string converts to number implicitly
+    * `+`: Number converts to String implicitly
+    * `-`, `*`, `/`: String converts to Number implicitly
     * Using logical operators or condition statement, value will be converted to boolean implicitly
 
 ### Operators
@@ -169,12 +179,9 @@ Version: 1.0
 
 * `if-else`
 * `switch`
-
-### Strict mode
-
-* Put `'use strict';` statement in the beginning of the `.js` file
-* Forbid to do certain things
-* Create visible errors
+* `for`
+* `while`
+* `do while`
 
 ***
 
@@ -242,8 +249,13 @@ Version: 1.0
 
 * Can put values of different data types in one array
 
+* Array is also an object
+
 * Basic operations
 
+  * `array.length`
+    * Return the length of the array
+  
   * `push`
     * Add new element to the end of the array
     * Return the length of the new array
@@ -260,10 +272,9 @@ Version: 1.0
     * Return the index of the element
   * `includes`
     * Check whether the element is included in the array
+  
 
 ### Objects
-
-* Map of JavaScript
 
 * Syntax
 
@@ -272,16 +283,25 @@ Version: 1.0
   ```javascript
   const obj = {
       key1: value1,
-      key2: value2
-  }
+      key2: value2,
+      func: function () {}	// Methods
+  };
   ```
 
+* In object methods, we can use `this` keyword
+
+  * Unlike Java, `this` must be used explicitly if you need to use the reference of the object
+  
 * Basic operations
 
   * Access a value
     * `obj.key`
     * `obj["key"]`
       * The string can be an expression which holds the value of the string of the key name
+    * Return `undefined` if there is not such a key
+  *  Create a new property on the current object
+    * `obj.newKey = val;`
+    * `obj["newKey"] = val;`
   * 
 
 ***
