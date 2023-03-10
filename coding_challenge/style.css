@@ -8,11 +8,26 @@
 
 .container {
     width: 50%;
-    margin: 60px auto;
+    margin: 40px auto;
 }
 
 .product {
     border: black 5px solid;
+    position: relative;
+}
+
+.product::after {
+    content: "SALE";
+    background-color: red;
+    font-size: 12px;
+    color: white;
+    font-style: bold;
+    letter-spacing: 0.3em;
+    display: inline-block;
+    padding: 5px 15px;
+    position: absolute;
+    top: -15px;
+    left: -33px;
 }
 
 .product-title {
@@ -56,6 +71,42 @@
 
 .part-1 {
     margin-bottom: 25px;
+}
+
+.available-colors {
+    margin-bottom: 15px;
+}
+
+.available-colors p {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    margin-right: 10px;
+}
+
+#color-1 {
+    background-color: black;
+}
+
+#color-2 {
+    background-color: rgb(47, 47, 202);
+}
+
+#color-3 {
+    background-color: red;
+}
+
+#color-4 {
+    background-color: yellow;
+}
+
+#color-5 {
+    background-color: green;
+}
+
+#color-6 {
+    background-color: rgb(173, 99, 15);
+    margin-right: 0;
 }
 
 .product-detail {

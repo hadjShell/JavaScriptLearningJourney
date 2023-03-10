@@ -133,7 +133,24 @@ li:first-child {
     color: blue;
 }
 
-/* 7. Star selector select all elements */
+/* 7. Pseudo-element selectors */
+h1::first-letter
+p::first-line
+/* Pseudo after and before, use for small things that is not necessary to code in html file*/
+h1::after {
+    content: "TOP";				/* First property must be content */
+    font-size: 16px;
+    color: red;
+    display: inline-block;		/* By default pseudo element is inline element*/
+    padding: 5px;
+}
+
+/* 8. Adjacent sibling selector */
+h3 + p {
+    color: red;
+}
+
+/* 9. Star selector select all elements */
 * {
     font-family: sans-serif
 }
@@ -289,7 +306,49 @@ p{
 }
 ```
 
+### Box types
+
+* Block box
+  * Elements occupy 100% of parent element's width, no matter the content
+  * Elements are stacked vertically by default
+  * Can be changed to inline box by `display: inline` in CSS
+* Inline box
+  * Occupies only the space necessary for its content
+  * Cause no line-breaks after or before the element
+  * Heights and widths do not apply
+  * Paddings and margins are applied only horizontally
+  * Can be changed to block box by `display: block` in CSS 
+* Inline-block box
+  * Looks like inline from the outside, behaves like block box on the inside
+  * `display: inline-block`
+  * `<img>` is inline box but behaves like an inline-block box
+
 ### Positioning
+
+* **Static**
+  * Normal document flow
+  * Default for all, except `html`
+* **Relative**
+
+  * Element is positioned relative to **its position in normal document flow**
+  * Can add offset properties `top bottom right left` to push it where we want 
+  * Element is **NOT** taken out of normal document flow
+  * Even if moved, its original spot is preserved
+  * Offsetting the relative container element offsets its contents as well
+  * `position: relative`
+* **Absolute**
+  * Element is removed from the normal flow
+  * No impact on surrounding elements, might overlap them
+  * All offsets are relative to the position of **the nearest container** which has position set on it
+  * By default, `html` is the only element that has non-static positioning set on it (relative)
+  * `position: absolute` in the element and `position: relative` in its parent
+* **Fixed**
+  * Always in the same position
+* Use `top`, `bottom`, `left`, `right` properties to adjust the position, value can be negative
+
+***
+
+## Layouts
 
 * **Positioning Elements by Floating** 
 
@@ -343,88 +402,6 @@ p {
   <p id="p3">3</p>
   <p id="p4">4</p>
   <section>This is regular content continuing after the the paragraph boxes.</section>
-</div>
-
-</body>
-</html>
-
-```
-
-* **Static**
-
-  * Normal document flow
-  * Default for all, except `html`
-* **Relative**
-
-  * Element is positioned relative to **its position in normal document flow**
-  * Can add offset properties `top bottom right left` to push it where we want 
-  * Element is **NOT** taken out of normal document flow
-  * Even if moved, its original spot is preserved
-  * Offsetting the relative container element offsets its contents as well
-* **Absolute**
-
-  * All offsets are relative to **the position of the ==nearest== ancestor which has position set on it**, other than static
-  * By default, `html` is the only element that has non-static positioning set on it (relative)
-  * Element is taken out of document flow
-* **Fixed**
-	* Always in the same position
-
-```html
-<!DOCTYPE html>
-<html>
-<head>
-<meta charset="utf-8">
-<title>Positioning Elements</title>
-<style>
-* {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
-}
-h1 {
-  margin-bottom: 15px;
-}
-
-div#container {
-  background-color: #00FFFF;
-  /* anchor the container position relative */
-  position: relative;
-}
-p {
-  width: 50px;
-  height: 50px;
-  border: 1px solid black;
-  margin-bottom: 15px;
-}
-#p1 {
-  background-color: #A52A2A;
-  position: relative;
-  top: 65px;
-  left: 65px;
-}
-#p2 {
-  background-color: #DEB887;
-}
-#p3 {
-  background-color: #5F9EA0;
-  position: absolute;
-  top: 0;
-  left: 0;
-}
-#p4 {
-  background-color: #FF7F50;
-}
-
-</style>
-</head>
-<body>
-<h1>Positioning Elements</h1>
-
-<div id="container">
-  <p id="p1">1</p>
-  <p id="p2">2</p>
-  <p id="p3">3</p>
-  <p id="p4">4</p>
 </div>
 
 </body>
