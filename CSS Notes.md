@@ -269,18 +269,18 @@ p{
     overflow: auto;
 }
 
-/* star selector select all elements */
+/* override the default setting in the user agent stylesheet made by the browser */
 * {
-    /* override some default setting in the user agent stylesheet made by the
-    browser */
     /* box-sizing cannot be inherited */
     box-sizing: border-box;
     margin: 0;
     padding: 0;
 }
 
-/* Margins collapse (only applied to top and bottom, not left and right) */
-/* the actual margin between these two boxes is the larger margin 30px */
+/* Margins collapse (only applied to top and bottom, not left and right) 
+   the actual margin between these two boxes is the larger margin 30px 
+   Therefore, always stick with one margin style when add margins among elements
+*/
 #box-1 {
     margin-bottom: 20px;
 }
