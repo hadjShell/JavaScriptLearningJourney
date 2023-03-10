@@ -1,0 +1,58 @@
+* {
+    font-family: sans-serif;
+    line-height: 1.4;
+}
+
+article {
+    border: black 5px solid;
+}
+
+article div {
+    color: black;
+}
+
+h2 {
+    font-size: 18px;
+    text-align: center;
+    background-color: #efefef;
+    text-transform: uppercase;
+}
+
+strong {
+    font-size: 20px;
+}
+
+.ship-price {
+    font-size: 12px;
+    color: #5b5b5b;
+}
+
+a:link,
+a:visited {
+    color: black;
+}
+
+a:hover {
+    text-decoration: none;
+}
+
+a:active {
+    color: black;
+}
+
+li {
+    list-style: square;
+}
+
+button {
+    border: none;
+    background-color: black;
+    color: white;
+    font-size: 18px;
+    text-transform: uppercase;
+}
+
+button:hover {
+    background-color: white;
+    color: black;
+}
