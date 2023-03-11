@@ -43,6 +43,7 @@ function playAgain() {
     document.querySelector(".message").textContent = "Start guessing...";
     document.querySelector(".number").textContent = "?";
     document.querySelector("body").style.backgroundColor = "#222";
+    document.querySelector(".guess").value = "";
     secretNumber = Math.trunc(Math.random() * 20) + 1;
     score = 20;
     document.querySelector(".score").textContent = 20;

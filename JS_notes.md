@@ -325,11 +325,16 @@ Version: 1.0
 
   ```javascript
   document.querySelector(".className").textContent = "new text";
+  
+  // Multiple classes
+  // Craete a NodeList
+  document.querySelectorAll(".className")
   ```
 
 * Handle click events
 
   * An event is something happened on the page
+  * **JavaScript will generate an object which contains all the information about the event when an event occurs**
 
   ```javascript
   /* para1: type of the event
@@ -346,6 +351,28 @@ Version: 1.0
   ```
 
   * Will not change the CSS file; add an inline style attribute
+
+* Working with classes
+
+  ```javascript
+  const element = document.querySelector(".className1");
+  // check the class names of the element
+  // add, remove, contains, etc.
+  element.classList.remove("className2");
+  ```
+
+  * Add and remove classes is the main way to manipulate the styles instead of manipulating `style` directly
+
+* Response with keyboard events
+
+  ```javascript
+  // keyup, keypress, keydown --- three conditions of interacting with a key on the keyboard
+  // usually choose keydown, happen as soon as we hit the key
+  document.addEventListener("keydown", function(e) {})
+  // use e.key to get which key is pressed
+  ```
+
+  
 
 ***
 
