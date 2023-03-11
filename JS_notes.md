@@ -306,5 +306,48 @@ Version: 1.0
 
 ***
 
+## DOM and Events
+
+### DOM
+
+* Document Object Model
+* Structured representation of HTML documents
+* Allows JavaScript to access HTML elements and styles to manipulate them
+* DOM is automatically created by the browser as soon as the HTML page loads
+* A **tree** structure
+* ![DOM](img\DOM.png)
+* `document` is the special object that is the entry point to the DOM
+* DOM is a Web API that written in JavaScript
+
+#### Operations
+
+* Select and manipulate elements
+
+  ```javascript
+  document.querySelector(".className").textContent = "new text";
+  ```
+
+* Handle click events
+
+  * An event is something happened on the page
+
+  ```javascript
+  /* para1: type of the event
+     para2: event function handler
+  */
+  document.querySelector(".btn").addEventListener('click', function() {})
+  ```
+
+* Manipulate CSS style
+
+  ```javascript
+  // value is always a string
+  document.querySelector("body").style.brackgroundColor = "#ffffff";
+  ```
+
+  * Will not change the CSS file; add an inline style attribute
+
+***
+
 ## OOP
 
