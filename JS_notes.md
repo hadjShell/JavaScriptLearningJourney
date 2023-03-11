@@ -325,7 +325,7 @@ Version: 1.0
 
   ```javascript
   document.querySelector(".className").textContent = "new text";
-  
+  document.getElementById("id");
   // Multiple classes
   // Craete a NodeList
   document.querySelectorAll(".className")
@@ -357,7 +357,8 @@ Version: 1.0
   ```javascript
   const element = document.querySelector(".className1");
   // check the class names of the element
-  // add, remove, contains, etc.
+  // add, remove, contains, toggle, etc.
+  // toggle: add if not contains, remove if contains
   element.classList.remove("className2");
   ```
 
@@ -371,8 +372,6 @@ Version: 1.0
   document.addEventListener("keydown", function(e) {})
   // use e.key to get which key is pressed
   ```
-
-  
 
 ***
 
