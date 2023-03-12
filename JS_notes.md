@@ -25,6 +25,25 @@ Version: 1.0
     * React Native, Ionic
   * Native desktop apps
     * Electron
+* JavaScript is a multi-paradigm interpreted language
+  * Modern JavaScript uses just-in-time compilation (no portable files)
+
+* JavaScript runtime
+  * Container including all the things that we need to use JavaScript
+  * Different types of JavaScript runtime
+  * Runtime in browsers
+    * JavaScript engine
+      * Program that executes JavaScript code
+      * Example: V8 engine for chrome and node.js
+
+    * Web APIs
+    * Callback queue
+
+  * Runtime in node.js
+    * JavaScript engine
+    * C++ bindings and thread pool
+    * Callback queue
+
 * JavaScript versions
   * ES6 / ES2015: biggest update to this language
   * New updates to JS every single year
@@ -56,6 +75,7 @@ Version: 1.0
 ### Variables and Values
 
 * `$` is allowed in the variable's name
+
 * Declaration
   * `let`
     * Variables
@@ -63,10 +83,23 @@ Version: 1.0
   * `const`
     * Constant
     * Must be assigned with a value
+    * Block-scope
   * `var`
     * Should be avoided
     * Old way of declaring variables before ES6
     * Function-scope
+
+* Hoisting
+
+  * Makes some types of variables accessible/usable in the code before they are actually declared
+
+  * |                                 | Hoisted                               | Initial Value                                |
+    | ------------------------------- | ------------------------------------- | -------------------------------------------- |
+    | function declarations           | Yes                                   | Actual function                              |
+    | `var` variables                 | Yes                                   | `undefined`                                  |
+    | `let` and `const` variables     | No                                    | `<uninitialised>`, TDZ (Temperory Dead Zone) |
+    | function expressions and arrows | Depends on using `var` or `let const` |                                              |
+
 
 ### Data types
 
@@ -186,6 +219,8 @@ Version: 1.0
 ***
 
 ## Functions
+
+* Functions in JavaScript are first-class, which means they are treated as variables
 
 * Syntax
 
