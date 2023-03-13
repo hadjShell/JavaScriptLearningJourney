@@ -93,7 +93,7 @@ function calcAverage(arr) {
 
 console.log(calcAverage(tips)); */
 
-// Challenge 9
+// Challenge 9, 10
 const game = {
     team1: 'Bayern Munich',
     team2: 'Borrussia Dortmund',
@@ -173,3 +173,27 @@ console.log(team1, draw, team2);
 printGoals('Davies', 'Muller', 'Lewandowski', 'Kimmich');
 printGoals(...game.scored);
 whoWillBeTheWinner();
+
+///////////////////////////////////////////////////////
+for (const [num, name] of game.scored.entries())
+    console.log(`Goal ${num + 1}: ${name}`);
+
+let sumOdd = 0;
+for (const odd of Object.values(game.odds)) {
+    sumOdd += odd;
+}
+console.log(sumOdd / 3);
+
+for (const [team, odd] of Object.entries(game.odds)) {
+    const str = game[team] ? "victory " + game[team] : "draw";
+    console.log(`Odd of ${str}: ${odd}`);
+}
+
+const scorers = {}
+for (const player of game.scored) {
+    scorers[player] ? scorers[player]++ : scorers[player] = 1;
+}
+console.log(scorers);
+
+//////////////////////////////////////////////////////////////
+

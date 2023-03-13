@@ -214,37 +214,53 @@ Version: 1.0
   * Use ANY data type, return ANY data type, short-circuiting
   * OR return the first truthy value or the last falsy value if all flasy
   * AND return the first falsy value or the last truthy value if all truthy
-
 * Bitwise operators
 * Ternary operator
 * Operator precedence
 * Modern operators
   * `...` works on iterables not objects
     * After ES2018, `...` works on objects too
-
   * Nullish coalescing operator `??`
     * Introduced in ES2020
     * Updated OR
     * Work with nullish value: `null` and `undeifined` without `0`
-
   * Logical assignment operator
     * Introduced in ES2021
     * `||=`, `??=`, `&&=`
-
-  * 
-
-
+  * Optional chaining `?.`
+    * Introduced in ES2020
+    * Check if a property or function is `undefined` or not
+    * Usually used with `??`
 
 ***
 
-### Expressions and Statements
+## Expressions and Statements
 
-### Flow control
+## Flow control
 
 * `if-else`
+
 * `switch`
+
 * `for`
+
+* `for-of`
+
+  ```javascript
+  const arr = [1, 2, 3];
+  for(const item of arr) console.log(item);
+  
+  const obj = {
+      "name": "John",
+      "gender": "male"
+  }
+  for(const [key, value] of Object.entries(obj)) console.log(key, value);
+  ```
+
+  * `continue` and `break` is allowed
+
 * `while`
+
 * `do while`
 
 ***
@@ -396,7 +412,9 @@ Version: 1.0
       add(...x);
       ```
   
-      
+  * `entries`
+  
+    * Return a new Array Iterator object that contains the key/value pairs for each index in the array
   
 
 ### Objects
@@ -415,6 +433,26 @@ Version: 1.0
 
   * It's not a block scope
 
+  * Enhanced object literals
+
+    ```javascript
+    const openingHours = {
+        fri: {
+            open: 11,
+            close: 23
+        }
+    };
+    const arr = ["name", "gender"];
+    const restaurant = {
+        // First enhancement: if the property name is the same as the variable name
+        openingHours,
+        // Second enhancement: function in object
+        check() {},
+        // Thirf enhancement: computing property name
+        [arr[0]]: "John" 
+    };
+    ```
+
 * In object methods, we can use `this` keyword
 
   * Unlike Java, `this` must be used explicitly if you need to use the reference of the object
@@ -430,6 +468,18 @@ Version: 1.0
   * Create a new property on the current object
     * `obj.newKey = val;`
     * `obj["newKey"] = val;`
+
+  * `Object.keys(obj)`
+
+    * Return an array of object property names
+
+  * `Object.values(obj)`
+
+    * Return an array of object property values
+
+  * `Object.entries(obj)`
+
+    * Return an array of object property key-value pairs
 
   * Destructing objects
 
@@ -477,27 +527,26 @@ Version: 1.0
     const {fri, ...otherDays} = openHours;
     ```
 
-    
 
-* Copy
+### Copy
 
-  * Reference copy
+* Reference copy
 
-    ```javascript
-    const newObj = oldObj;
-    ```
+  ```javascript
+  const newObj = oldObj;
+  ```
 
-  * Shallow copy
+* Shallow copy
 
-    ```javascript
-    const newArr = [...oldArr];
-    const newObj = {...oldObj};
-    const newObj = Object.assign({}, oldObj);
-    ```
+  ```javascript
+  const newArr = [...oldArr];
+  const newObj = {...oldObj};
+  const newObj = Object.assign({}, oldObj);
+  ```
 
-  * Deep clone
-  
-    * Use external libraries
+* Deep clone
+
+  * Use external libraries
 
 
 ***
