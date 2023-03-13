@@ -8,9 +8,7 @@ Version: 1.0
 
 ***
 
-## JavaScript Fundamentals
-
-### Introduction
+## Introduction
 
 * Three pillars in web development
   * HTML - Content - Nouns
@@ -72,7 +70,9 @@ Version: 1.0
 * Forbid to do certain things
 * Create visible errors
 
-### Variables and Values
+***
+
+## Variables and Values
 
 * `$` is allowed in the variable's name
 
@@ -88,6 +88,7 @@ Version: 1.0
     * Should be avoided
     * Old way of declaring variables before ES6
     * Function-scope
+    * Creates property on `window` object
 
 * Hoisting
 
@@ -100,14 +101,15 @@ Version: 1.0
     | `let` and `const` variables     | No                                    | `<uninitialised>`, TDZ (Temperory Dead Zone) |
     | function expressions and arrows | Depends on using `var` or `let const` |                                              |
 
+***
 
-### Data types
+## Data types
 
 * JavaScript has **dynamic typing**: we don't have to manually define the data type of the value stored in a variable. Instead, data types are determined automatically.
 
 * **In JavaScript, it is the value that has a type, not the variable**
 
-* Primitive data type
+* Primitive data types
 
   * Number
 
@@ -162,7 +164,12 @@ Version: 1.0
 
     * Large integers than the Number type can hold
 
-* Class type
+* Reference data type
+
+  * Object literal
+  * Arrays
+  * Functions
+  * Etc.
 
 * `typeof` operator
 
@@ -185,7 +192,9 @@ Version: 1.0
     * `-`, `*`, `/`: String converts to Number implicitly
     * Using logical operators or condition statement, value will be converted to boolean implicitly
 
-### Operators
+***
+
+## Operators
 
 * Mathematical operators
   * Exponentiation operator: `**`
@@ -202,9 +211,31 @@ Version: 1.0
     * Does perform type coercion
   * Avoid using loose equality operator
 * Logical operators
+  * Use ANY data type, return ANY data type, short-circuiting
+  * OR return the first truthy value or the last falsy value if all flasy
+  * AND return the first falsy value or the last truthy value if all truthy
+
 * Bitwise operators
 * Ternary operator
 * Operator precedence
+* Modern operators
+  * `...` works on iterables not objects
+    * After ES2018, `...` works on objects too
+
+  * Nullish coalescing operator `??`
+    * Introduced in ES2020
+    * Updated OR
+    * Work with nullish value: `null` and `undeifined` without `0`
+
+  * Logical assignment operator
+    * Introduced in ES2021
+    * `||=`, `??=`, `&&=`
+
+  * 
+
+
+
+***
 
 ### Expressions and Statements
 
@@ -261,6 +292,10 @@ Version: 1.0
   ```
 
   * Helpful for one-line functions
+  * Does **not** get its own `this` keyword
+  * Does **not** have `arguments` keyword
+
+* `arguments` key word
 
 ***
 
@@ -294,19 +329,74 @@ Version: 1.0
   * `push`
     * Add new element to the end of the array
     * Return the length of the new array
+  
   * `unshift`
     * Add new element to the start of the array
     * Return the length of the new array
+  
   * `pop`
     * Remove the last element of the array
     * Return the removed element
+  
   * `shift`
     * Removed the first element of the array
     * Return the removed element
+  
   * `indexOf`
     * Return the index of the element
+  
   * `includes`
+  
     * Check whether the element is included in the array
+  
+  * Destructing array
+  
+    ```javascript
+    const arr = [1, 2, 3];
+    const [x, y, z] = arr;
+    // skip elements
+    const [x, , z] = arr;
+    // default value
+    const [a = 0, b = 0, c = 0, d = 0] = arr;		// without default value, d will be undefined
+    
+    // switch using this technique
+    [a, b] = [b, a];
+    ```
+  
+  * Spread array (unpack)
+  
+    ```javascript
+    const arr = [7, 8, 9];
+    const newArr = [1, 2, ...arr];		// [1, 2, 7, 8, 9]
+    ```
+  
+  * Rest pattern (pack)
+  
+    * The rest element must be the last element
+  
+    ```javascript
+    const arr = [1, 2 ,3 ,4 ,5];
+    const [a, b, ...others] = arr;		// a = 1, b = 2, others = [3, 4, 5]
+    ```
+  
+    * Using spread and rest together can write more general functions
+  
+      ```javascript
+      function add (...numbers) {
+          let sum = 0;
+          for(int i = 0; i < numbers.length; i++)
+              sum += numbers[i];
+          return sum;
+      }
+      
+      // All of following usages are available
+      add(2, 3);
+      add(1, 2, 3, 4, 5);
+      const x = [1, 2, 3];
+      add(...x);
+      ```
+  
+      
   
 
 ### Objects
@@ -323,10 +413,12 @@ Version: 1.0
   };
   ```
 
+  * It's not a block scope
+
 * In object methods, we can use `this` keyword
 
   * Unlike Java, `this` must be used explicitly if you need to use the reference of the object
-  
+
 * Basic operations
 
   * Access a value
@@ -334,10 +426,79 @@ Version: 1.0
     * `obj["key"]`
       * The string can be an expression which holds the value of the string of the key name
     * Return `undefined` if there is not such a key
-  *  Create a new property on the current object
+
+  * Create a new property on the current object
     * `obj.newKey = val;`
     * `obj["newKey"] = val;`
-  * 
+
+  * Destructing objects
+
+    ```javascript
+    const restaurant = {
+        name: "YO",
+        menu: ["Ice cream", "burger"],
+        openingHours: {
+            fri: {
+                open: 11,
+                close: 23
+            },
+            sat: {
+                open: 0,
+                close: 24
+            }, 
+            sun: {
+                open: 0,
+                close: 24
+            }
+        }
+    };
+    
+    const {name, openingHours, menu} = restaurant;				// order doesn't matter here
+    const {name: x, openingHours: y, menu: z} = restaurant;		// new variable name
+    const {menu = []} = retaurant;							 // default value
+    const {fri: {open, close}} = openingHours;				 //	nested objetcs
+    
+    // switch
+    ({a, b} = {b, a});			// () is required
+    ```
+
+  * Spread
+
+    ```javascript
+    const newRestaurant = {
+        ...restaurant,
+        founder: "John"
+    };
+    ```
+
+  * Rest
+
+    ```javascript
+    const {fri, ...otherDays} = openHours;
+    ```
+
+    
+
+* Copy
+
+  * Reference copy
+
+    ```javascript
+    const newObj = oldObj;
+    ```
+
+  * Shallow copy
+
+    ```javascript
+    const newArr = [...oldArr];
+    const newObj = {...oldObj};
+    const newObj = Object.assign({}, oldObj);
+    ```
+
+  * Deep clone
+  
+    * Use external libraries
+
 
 ***
 
