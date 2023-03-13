@@ -255,6 +255,9 @@ Version: 1.0
       "gender": "male"
   }
   for(const [key, value] of Object.entries(obj)) console.log(key, value);
+  
+  const m = new Map();
+  for(const [key, value] of m) {}
   ```
 
   * `continue` and `break` is allowed
@@ -315,7 +318,7 @@ Version: 1.0
 
 ***
 
-## Data structure
+## Built-in Data structure
 
 ### Arrays
 
@@ -431,6 +434,8 @@ Version: 1.0
   };
   ```
 
+  * `key` are always strings
+
   * It's not a block scope
 
   * Enhanced object literals
@@ -527,6 +532,171 @@ Version: 1.0
     const {fri, ...otherDays} = openHours;
     ```
 
+
+### Sets
+
+* Syntax
+
+  ```javascript
+  const s = new Set([]);
+  ```
+
+* Basic operations
+
+  * `.size`
+
+  * `has`
+
+    * Check if the set contains the element
+
+  * `add`
+
+    * Add an element to a set if it is not included
+
+  * `delete`
+
+    * Delete an element
+
+  * `clear`
+
+    * Delete all elements
+
+  * Convert set to array
+
+    ```javascript
+    const arr = [...s];
+    ```
+
+### Maps
+
+* Syntax
+
+  ```javascript
+  const m = new Map([ [k1, v1], [k2, v2] ]);
+  ```
+
+* Difference from objects: **`key` in a map can be any data type**
+
+* Basic operations
+
+  * `.size`
+
+    * Return the size of the map
+
+  * `set(key, value)`
+
+    * Add a new element into map
+    * Return the changed map
+    * Can be chained `m.set(a, b).set(c, d)`
+
+  * `get(key)`
+
+    * Return the value according to the key
+    * Return `undefined` if there is not such a key
+
+  * `has()`
+
+    * Check if a map has a certain key
+
+  * `delete(key)`
+
+    * Delete an element according to the key
+
+  * `keys()`
+
+    * Return an iterable of values in map
+    * `[...m.keys()]` to get the array of keys
+
+  * `values()`
+
+    * Return an iterable of keys in map
+
+  * `entries()`
+
+  * Convert object to map
+
+    ```javascript
+    const m = new Map(Object.entries(obj));
+    ```
+
+  * Convert map to array
+
+    ```javascript
+    const arr = [...m];
+    ```
+
+### Strings
+
+* Whenever call a method on a string, JavaScript will automatically create a string object (boxing)
+
+* Operations
+
+  * `[]`
+
+    * Access the character (still a string)
+
+  * `indexOf`
+
+    * Return the index of the first appearing string
+
+  * `lastIndexOf`
+
+    * Return the index of the last appearing string
+
+  * `slice()`
+
+    * Return the substring
+
+      ```javascript
+      const airline = "TAP Air Portugal";
+      
+      airline.slice(4);								// <Air Portugal>
+      airline.slice(4, 7);							// <Air>	
+      airline.slice(0, airline.indexOf(" "));		 	  // <TAP>
+      airline.slice(airline.lastIndexOf(" ") + 1);	  // <Portugal>
+      airline.slice(-2);								// <al>
+      airline.slice(1, -1);							// <AP Air Portuga>		
+      ```
+
+  * `toLowerCase`
+
+  * `toUpperCase`
+
+  * `trim`
+
+    * Removes whitespace from both ends of a string and returns a new string 
+
+  * `replace(pattern, replacement)`
+
+    * Returns a new string with one, some, or all matches of a `pattern` replaced by a `replacement`
+    * The `pattern` can be a string or a [`RegExp`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/RegExp), and the `replacement` can be a string or a function called for each match
+    * If `pattern` is a string, only the first occurrence will be replaced
+
+  * `includes`
+
+  * `startsWith`
+
+  * `endsWith`
+
+  * `split(pattern)`
+
+    * Takes a pattern and divides a string into an ordered list of substrings by searching for the pattern, puts these substrings into an array, and returns the array
+
+  * `join(separator)`
+
+    * Returns a new string by concatenating all of the elements in an *array*, separated by commas or a specified separator string
+    * If the array has only one item, then that item will be returned without using the separator
+
+  * `padStart(targetLength, padString)`
+
+    * Pads the current string with another string (multiple times, if needed) until the resulting string reaches the given length
+    * The padding is applied from the start of the current string
+
+  * `padEnd`
+
+  * `repeat(count)`
+
+    * Returns a new string which contains the specified number of copies of the string on which it was called, concatenated together
 
 ### Copy
 

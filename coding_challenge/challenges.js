@@ -93,7 +93,7 @@ function calcAverage(arr) {
 
 console.log(calcAverage(tips)); */
 
-// Challenge 9, 10
+/* // Challenge 9, 10
 const game = {
     team1: 'Bayern Munich',
     team2: 'Borrussia Dortmund',
@@ -193,7 +193,52 @@ const scorers = {}
 for (const player of game.scored) {
     scorers[player] ? scorers[player]++ : scorers[player] = 1;
 }
-console.log(scorers);
+console.log(scorers); */
 
-//////////////////////////////////////////////////////////////
+/* // Challenge 11
+const gameEvents = new Map([
+    [17, '⚽ GOAL'],
+    [36, '� Substitution'],
+    [47, '⚽ GOAL'],
+    [61, '� Substitution'],
+    [64, '� Yellow card'],
+    [69, '� Red card'],
+    [70, '� Substitution'],
+    [72, '� Substitution'],
+    [76, '⚽ GOAL'],
+    [80, '⚽ GOAL'],
+    [92, '� Yellow card'],
+]);
+const events = [...new Set(gameEvents.values())];
+console.log(events);
+gameEvents.delete(64);
+console.log(gameEvents);
+console.log(`An event happened, on average, every ${90 / gameEvents.size} minutes`);
+for (const [time, event] of gameEvents) {
+    const half = time <= 45 ? "[FIRST HALF]" : "[SECOND HALF]";
+    console.log(`${half}${time}: ${event}`);
+} */
 
+// Challenge 12
+function underscoreToCamelcase(...names) {
+    const newNames = [];
+    let i = 1;
+    for (let name of names) {
+        const words = name.toLowerCase().trim().split("_");
+        words[1] = words[1].replace(words[1][0], words[1][0].toUpperCase());
+        name = `${words.join("").padEnd(20, " ")}${"✅".repeat(i++)}`;
+        newNames.push(name);
+    }
+    return newNames;
+}
+
+const names = [
+    "underscore_case",
+    "first_name",
+    "Some_Variable ",
+    " calculate_AGE",
+    "delayed_departure"
+];
+const newNames = underscoreToCamelcase(...names);
+for (const name of newNames)
+    console.log(name);
