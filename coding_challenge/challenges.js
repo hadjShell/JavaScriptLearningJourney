@@ -219,7 +219,7 @@ for (const [time, event] of gameEvents) {
     console.log(`${half}${time}: ${event}`);
 } */
 
-// Challenge 12
+/* // Challenge 12
 function underscoreToCamelcase(...names) {
     const newNames = [];
     let i = 1;
@@ -241,4 +241,32 @@ const names = [
 ];
 const newNames = underscoreToCamelcase(...names);
 for (const name of newNames)
-    console.log(name);
+    console.log(name); */
+
+/* // Challenge 13
+const flights =
+    '_Delayed_Departure;fao93766109;txl2133758440;11:25\
++_Arrival;bru0943384722;fao93766109;11:45\
++_Delayed_Arrival;hel7439299980;fao93766109;12:05\
++_Departure;fao93766109;lis2323639855;12:30';
+
+function mkRightStr(str) {
+    let [state, start, arrival, time] = str.split(";");
+    // make state string
+    state = state.replaceAll("_", " ").trim();
+    if (state.includes("Delayed"))
+        state = "🛑 " + state;
+    // make start and arrival string
+    start = start.slice(0, 3).toUpperCase();
+    arrival = arrival.slice(0, 3).toUpperCase();
+    // make time
+    time = `(${time.slice(0, 2)}h${time.slice(-2)})`;
+    return `${state} from ${start} to ${arrival} ${time}`.padStart(45, " ");
+}
+
+const strArr = flights.split("+");
+for (const flight of strArr) {
+    console.log(mkRightStr(flight));
+} */
+
+// Challenge 14
