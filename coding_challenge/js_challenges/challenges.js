@@ -269,4 +269,42 @@ for (const flight of strArr) {
     console.log(mkRightStr(flight));
 } */
 
-// Challenge 14
+/* // Challenge 14
+const poll = {
+    question: "What is your favourite programming language?",
+    options: ["0: JavaScript", "1: Python", "2: Rust", "3: C++"],
+    // This generates [0, 0, 0, 0]. More in the next section!
+    answers: new Array(4).fill(0),
+
+    register() {
+        const option = Number(prompt(`${this.question}\n${this.options.join(" \n")}`));
+        switch (option) {
+            case 0:
+            case 1:
+            case 2:
+            case 3:
+                this.answers[option]++;
+                break;
+            default:
+                break;
+        }
+        this.displayResults();
+    },
+
+    displayResults(type = "array") {
+        if (type === "array") {
+            console.log(this.answers);
+        }
+        else if (type === "string") {
+            console.log(`Poll results are ${this.answers.join(", ")}`);
+        }
+        else {
+            console.log("Please select a correct type.");
+        }
+    }
+};
+
+document.querySelector(".poll").addEventListener("click", poll.register.bind(poll));
+poll.displayResults.call({ answers: [5, 2, 3] }, "string") */
+
+// Challenge 15

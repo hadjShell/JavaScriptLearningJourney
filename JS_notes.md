@@ -270,7 +270,20 @@ Version: 1.0
 
 ## Functions
 
-* Functions in JavaScript are first-class, which means they are treated as variables
+* Functions in JavaScript are first-class, which means they are treated as variables, so in JavaScript we can 
+
+  * Store functions in variables or properties
+  * Pass functions as arguments to other functions
+  * Return functions from functions
+  * Call methods on functions
+
+* Higher-order funtions
+
+  * A function that receives another function as an argument, that returns a new function, or both
+  * The function as an argument is called callback function
+    * `funcArg.name` returns the name of the function
+
+  * The function that is returned is called returned function
 
 * Syntax
 
@@ -284,6 +297,45 @@ Version: 1.0
   ```
 
 * Functions can be invoked before their declarations
+
+* Default parameters
+
+  ```javascript
+  function createBooking(
+  	flightNum, 
+       numPassengers = 1, 
+       price = 199 * numPassengers) {}
+  
+  createBooking("LH123");
+  createBooking("LH123", 2, 800);
+  createBooking("LH123", undefined, 1000);		// skip a parameter to use its default value
+  ```
+
+* Functions in JavaScript is passed-by-value
+
+* `arguments` key word
+
+  * An `Array`-like object accessible inside function that contains the values of the arguments passed to that function
+
+* `this`
+
+  * Depends on how the function is called
+  * In regular function, `this` points to `undefined`
+  * ***In an event handler function, `this` always points to the element on which that handler is attached to***
+  * Manually tell how it should behave
+    * `func.call(thisArg, args)`
+      * Calls the function with a given `this` value and arguments provided individually
+
+    * `func.apply(thisArg, argsArr)`
+      * Calls the specified function with a given `this` value, and `arguments` provided as an array
+      * Equals to `func.call(thisArg, ...argsArr)`
+      * Stick to `call`
+
+    * `func.bind(thisArg, <args>)`
+      *  Creates a new function that, when called, has its `this` keyword set to the provided value, with a given sequence of arguments preceding any provided when the new function is called
+      * If pass `args`, it will be preset when the `func` is called --- Partial application
+      * Pass `null` to `thisArg` if you want to create a partial application without having `this` inside
+
 
 * Anonymous function
 
@@ -303,7 +355,7 @@ Version: 1.0
   * A special form of anonymous function
 
   ```javascript
-  const funcName = para => exp;	// without {}, we don't need to return the value explicitly
+  const funcName = para => exp;				// without {}, we don't need to return the value explicitly
   const funcName = (para1, para2) => {}		// with {}, we define the function in the traditional way
   
   // example
@@ -313,8 +365,6 @@ Version: 1.0
   * Helpful for one-line functions
   * Does **not** get its own `this` keyword
   * Does **not** have `arguments` keyword
-
-* `arguments` key word
 
 ***
 
@@ -684,7 +734,7 @@ Version: 1.0
 
   * `join(separator)`
 
-    * Returns a new string by concatenating all of the elements in an *array*, separated by commas or a specified separator string
+    * Returns a new string by concatenating all of the elements in an ***array***, separated by commas or a specified separator string
     * If the array has only one item, then that item will be returned without using the separator
 
   * `padStart(targetLength, padString)`
@@ -787,6 +837,10 @@ Version: 1.0
   document.addEventListener("keydown", function(e) {})
   // use e.key to get which key is pressed
   ```
+
+***
+
+## Numbers, Dates, Intl and Timers
 
 ***
 
