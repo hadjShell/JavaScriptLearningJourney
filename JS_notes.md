@@ -270,12 +270,12 @@ Version: 1.0
 
 ## Functions
 
-* Functions in JavaScript are first-class, which means they are treated as variables, so in JavaScript we can 
+* Functions in JavaScript are **first-class objects**, **which means they are treated as variables**, so in JavaScript we can 
 
-  * Store functions in variables or properties
-  * Pass functions as arguments to other functions
-  * Return functions from functions
-  * Call methods on functions
+  * *Store functions in variables or properties*
+  * *Pass functions as arguments to other functions*
+  * *Return functions from functions*
+  * *Call methods on functions*
 
 * Higher-order funtions
 
@@ -285,7 +285,7 @@ Version: 1.0
 
   * The function that is returned is called returned function
 
-* Syntax
+* Syntax - **function declaration**
 
   ```javascript
   function funcName() {}
@@ -298,10 +298,10 @@ Version: 1.0
 
 * Functions can be invoked before their declarations
 
-* Anonymous function
+* Anonymous function - **function expression**
 
   ```javascript
-  const funcName = function () {}
+  const funcName = function () {};
   
   // example
   const calcAge2 = function (birthYear) {
@@ -311,13 +311,13 @@ Version: 1.0
 
   * Cannot be invoked before function expression
 
-* Arrow function
+* Arrow function - **function expression**
 
   * A special form of anonymous function
 
   ```javascript
   const funcName = para => exp;				// without {}, we don't need to return the value explicitly
-  const funcName = (para1, para2) => {}		// with {}, we define the function in the traditional way
+  const funcName = (para1, para2) => {};		// with {}, we define the function in the traditional way
   
   // example
   const calcAge3 = birthYear => 2023 - birthYear;
@@ -380,6 +380,11 @@ Version: 1.0
 
   * A function always has access to the variable environment of the execution context (call stack) in which it was created, even if that execution context is removed from the stack
   * Closure has high priority over scope chain
+
+* Chaining methods
+
+  * 
+
 
 
 ***
@@ -520,6 +525,23 @@ Version: 1.0
     * `element`: the current element being processed in the array
     * `index`: the index of the current element being processed in the array
     * `array`: the array that calls `forEach`
+  
+  * `map(callbackFn)`
+  
+    * **Creates a new array** populated with the results of calling a provided function on every element in the calling array
+  
+  * `filter(callbackFn)`
+  
+    * Returns a **shallow copy** of a portion of the given array, filtered down to just the elements from the given array that pass the test implemented by the provided function. If no elements pass the test, an empty array will be returned
+    * `callbackFn` returns a boolean value
+  
+  * `reduce(callbackFn, initialValue)`
+  
+  * `reduce(function(accumulator, cuurentValue, currentIndex, array) {}, initiaValue)`
+  
+    * Executes a user-supplied "reducer" callback function on each element of the array, in order, passing in the return value from the calculation on the preceding element. The final result of running the reducer across all elements of the array is a **single value**
+    * `accumulator`: the value resulting from the previous call to `callbackFn`
+    * `initialValue`: a value to which `accumulator` is initialized the first time the callback is called. If `initialValue` is specified, `callbackFn` starts executing with the first value in the array as `currentValue`. If `initialValue` is *not* specified, `accumulator` is initialized to the first value in the array, and `callbackFn` starts executing with the second value in the array as `currentValue`. In this case, if the array is empty (so that there's no first value to return as `accumulator`), an error is thrown
   
 
 ### Objects

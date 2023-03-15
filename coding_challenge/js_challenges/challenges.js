@@ -327,4 +327,14 @@ function checkDogs(dogs1, dogs2) {
 
 checkDogs(dogsJulia, dogsKate); */
 
-// Challenge 16
+/* // Challenge 16, 17
+function calcAverageHumanAge(dogs) {
+    return dogs
+        .map(age => age <= 2 ? 2 * age : 16 + 4 * age)
+        .filter(age => age >= 18)
+        .reduce((avg, age, _, arr) => avg + age / arr.length, 0);
+};
+
+const ages = [16, 6, 10, 5, 6, 1, 4];
+console.log(calcAverageHumanAge(ages));
+console.log(calcAverageHumanAge.toString()); */
