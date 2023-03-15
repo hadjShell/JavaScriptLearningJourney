@@ -62,13 +62,117 @@ const inputCloseUsername = document.querySelector('.form__input--user');
 const inputClosePin = document.querySelector('.form__input--pin');
 
 // User methods
-function userCalcBalance(movements) {
-    return movements.reduce((acc, movement) => acc + movement, 0);
+function userCalcBalance(account) {
+    account.balance = account.movements.reduce((acc, movement) => acc + movement, 0);
+}
+
+function userCalcSummary(account) {
+    const incomes = account.movements
+        .filter(movement => movement > 0);
+    const income = incomes
+        .reduce((sum, movement) => sum + movement, 0);
+    const outcome = account.movements
+        .filter(movement => movement < 0)
+        .reduce((sum, movement) => sum - movement, 0);
+    const interest = incomes
+        .map(income => income * account.interestRate / 100)
+        .filter(interest => interest >= 1)
+        .reduce((sum, interest) => sum + interest, 0);
+    return [income, outcome, interest];
+}
+
+/**
+ * 
+ * Only be called after user is logger in and all inforemation is set up
+ * 
+ * @param {account} account 
+ * @param {string} recipientUsername 
+ * @param {string} amount 
+ */
+function userTransfer(account, recipientUsername, amount) {
+    amount = Number(amount);
+    const recipient = accounts.find(account => account.username === recipientUsername);
+    if (recipient && recipient.username !== account.username && amount > 0 && account.balance >= amount) {
+        account.movements.push(-amount);
+        recipient.movements.push(amount);
+    }
+}
+
+/**
+ * 
+ * Only be called after user is logger in and all inforemation is set up
+ * 
+ * @param {account} account 
+ * @param {string} amount 
+ */
+function userLoan(account, amount) {
+    amount = Number(amount);
+    const incomes = account.movements
+        .filter(movement => movement > 0);
+    if (amount > 0 && incomes.find(income => income > amount * 0.1))
+        account.movements.push(amount);
 }
 
 
 
 // UI functions
-function displayBalance() { }
+function displayBalance(account) { }
 
-function displayMovements() { }
+function displaySummary(account) { }
+
+function displayMovements(account) { }
+
+function transferMoney(account, inputUsername, inputAmount) { }
+
+function requestLoan(account, inputAmount) { }
+
+function displayUI(account) {
+    labelWelcome.textContent = `Welcome back, ${account.owner.split(" ")[0]}`;
+    containerApp.style.opacity = 100;
+    inputLoginUsername.textContent = "";
+    inputLoginPin.textContent = "";
+    inputLoginPin.blur();
+
+    updateUI(account);
+}
+
+function updateUI(account) {
+    userCalcBalance(account);
+    userCalcSummary(account);
+    displayBalance(account);
+    displaySummary(account);
+    displayMovements(account);
+}
+
+// System
+// System data
+let currentAccount = null;
+
+// System functions
+function createUsernames(accounts) {
+    accounts.forEach(account => {
+        account.username = account.owner
+            .toLowerCase()
+            .split(" ")
+            .map(name => name[0])
+            .join("");
+    });
+}
+
+/**  
+    * Log in function
+    * 
+    * @param {string} username: user input
+    * @param {string} pin:      user input
+    * 
+    * @return currentAccount if {username} exists in the system and {pin} is correct; 
+    *         otherwise return null
+ */
+function userLogin(username, pin) {
+    currentAccount = accounts.find(account => account.username === username);
+    currentAccount = currentAccount && currentAccount.pin === Number(pin) ? currentAccount : null;
+}
+
+function init() { }
+
+// Event handlers

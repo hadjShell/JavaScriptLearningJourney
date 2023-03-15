@@ -383,7 +383,7 @@ Version: 1.0
 
 * Chaining methods
 
-  * 
+  * Avoid chaining the methods that mutate the original object
 
 
 
@@ -542,6 +542,19 @@ Version: 1.0
     * Executes a user-supplied "reducer" callback function on each element of the array, in order, passing in the return value from the calculation on the preceding element. The final result of running the reducer across all elements of the array is a **single value**
     * `accumulator`: the value resulting from the previous call to `callbackFn`
     * `initialValue`: a value to which `accumulator` is initialized the first time the callback is called. If `initialValue` is specified, `callbackFn` starts executing with the first value in the array as `currentValue`. If `initialValue` is *not* specified, `accumulator` is initialized to the first value in the array, and `callbackFn` starts executing with the second value in the array as `currentValue`. In this case, if the array is empty (so that there's no first value to return as `accumulator`), an error is thrown
+  
+  * `find(callbackFn)`
+  
+  * `findLast(callbackFn)`
+  
+    *  Returns the first / last element in the provided array that satisfies the provided testing function. If no values satisfy the testing function, `undefined` is returned
+    * `callbackFn` returns a boolean value
+  
+  * `findIndex(callbackFn)`
+  
+  * `findLastIndex(callbackFn)`
+  
+    * 
   
 
 ### Objects
@@ -937,7 +950,15 @@ Version: 1.0
   element.insertAdjacentHTML(position, text);
   ```
 
-  
+* Prevent `<form>` from submmiting
+
+  ```javascript
+  e.preventDefault();			// Stop page reloading after sbumitting
+  ```
+
+* `blur()`
+
+* 
 
 ***
 
