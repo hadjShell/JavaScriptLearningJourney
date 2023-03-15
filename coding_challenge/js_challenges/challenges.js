@@ -307,4 +307,24 @@ const poll = {
 document.querySelector(".poll").addEventListener("click", poll.register.bind(poll));
 poll.displayResults.call({ answers: [5, 2, 3] }, "string") */
 
-// Challenge 15
+/* // Challenge 15
+const dogsJulia = [3, 5, 2, 12, 7];
+const dogsKate = [4, 1, 15, 8, 3];
+
+function check(e, i) {
+    if (e >= 3) {
+        console.log(`Dog number ${i + 1} is an adult, and is ${e} years old`);
+    }
+    else
+        console.log(`Dog number ${i + 1} is still a puppy`);
+}
+
+function checkDogs(dogs1, dogs2) {
+    const copyDogs1 = dogs1.slice(1, -2);
+    copyDogs1.forEach(check);
+    dogs2.forEach(check);
+}
+
+checkDogs(dogsJulia, dogsKate); */
+
+// Challenge 16

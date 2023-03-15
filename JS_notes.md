@@ -64,11 +64,11 @@ Version: 1.0
     * Put code in the `.js` files in the same folder of HTML files
     * Tag `<script src=""></script>` 
 
-### Strict mode
+* Strict mode
+  * Put `'use strict';` statement in the beginning of the `.js` file
+  * Forbid to do certain things
+  * Create visible errors
 
-* Put `'use strict';` statement in the beginning of the `.js` file
-* Forbid to do certain things
-* Create visible errors
 
 ***
 
@@ -298,45 +298,6 @@ Version: 1.0
 
 * Functions can be invoked before their declarations
 
-* Default parameters
-
-  ```javascript
-  function createBooking(
-  	flightNum, 
-       numPassengers = 1, 
-       price = 199 * numPassengers) {}
-  
-  createBooking("LH123");
-  createBooking("LH123", 2, 800);
-  createBooking("LH123", undefined, 1000);		// skip a parameter to use its default value
-  ```
-
-* Functions in JavaScript is passed-by-value
-
-* `arguments` key word
-
-  * An `Array`-like object accessible inside function that contains the values of the arguments passed to that function
-
-* `this`
-
-  * Depends on how the function is called
-  * In regular function, `this` points to `undefined`
-  * ***In an event handler function, `this` always points to the element on which that handler is attached to***
-  * Manually tell how it should behave
-    * `func.call(thisArg, args)`
-      * Calls the function with a given `this` value and arguments provided individually
-
-    * `func.apply(thisArg, argsArr)`
-      * Calls the specified function with a given `this` value, and `arguments` provided as an array
-      * Equals to `func.call(thisArg, ...argsArr)`
-      * Stick to `call`
-
-    * `func.bind(thisArg, <args>)`
-      *  Creates a new function that, when called, has its `this` keyword set to the provided value, with a given sequence of arguments preceding any provided when the new function is called
-      * If pass `args`, it will be preset when the `func` is called --- Partial application
-      * Pass `null` to `thisArg` if you want to create a partial application without having `this` inside
-
-
 * Anonymous function
 
   ```javascript
@@ -365,6 +326,61 @@ Version: 1.0
   * Helpful for one-line functions
   * Does **not** get its own `this` keyword
   * Does **not** have `arguments` keyword
+
+* Default parameters
+
+  ```javascript
+  function createBooking(
+  	flightNum, 
+       numPassengers = 1, 
+       price = 199 * numPassengers) {}
+  
+  createBooking("LH123");
+  createBooking("LH123", 2, 800);
+  createBooking("LH123", undefined, 1000);		// skip a parameter to use its default value
+  ```
+
+* Functions in JavaScript is passed-by-value
+
+* `arguments` key word
+
+  * An `Array`-like object accessible inside function that contains the values of the arguments passed to that function
+
+* `this`
+
+  * Depends on how the function is called, which means it is **dynamic**
+  * In method, `this` points to the owner of the function
+  * In regular function, `this` points to `undefined` (in strict mode; otherwise points to `window`)
+  * In arrow function, `this` will be the `this` of the parent function
+  * ***In an event handler function, `this` always points to the element on which that handler is attached to***
+  * Manually tell how it should behave
+    * `func.call(thisArg, args)`
+      * Calls the function with a given `this` value and arguments provided individually
+
+    * `func.apply(thisArg, argsArr)`
+      * Calls the specified function with a given `this` value, and `arguments` provided as an array
+      * Equals to `func.call(thisArg, ...argsArr)`
+      * Stick to `call`
+
+    * `func.bind(thisArg, <args>)`
+      *  Creates a new function that, when called, has its `this` keyword set to the provided value, with a given sequence of arguments preceding any provided when the new function is called
+      * If pass `args`, it will be preset when the `func` is called --- Partial application
+      * Pass `null` to `thisArg` if you want to create a partial application without having `this` inside
+
+* Immediately invoked function expression
+
+  * Called once and never be called again
+
+    ```javascript
+    (function() {})();
+    (() => {})();
+    ```
+
+* Closures
+
+  * A function always has access to the variable environment of the execution context (call stack) in which it was created, even if that execution context is removed from the stack
+  * Closure has high priority over scope chain
+
 
 ***
 
@@ -468,6 +484,42 @@ Version: 1.0
   * `entries`
   
     * Return a new Array Iterator object that contains the key/value pairs for each index in the array
+  
+  * `slice`
+  
+  * `splice`
+  
+    * Works similar as `slice`, but change the original array by taking the extracted elements
+  
+  * `reverse`
+  
+    * Change the original array
+  
+  * `arr1.concat(arr2)`
+  
+    * Returns a new array, doesn't change the original arrays
+  
+    * Same effect: 
+  
+      ```javascript
+      [...arr1, ...arr2]
+      ```
+  
+  * `join`
+  
+  * `at`
+  
+    * Takes an integer value and returns the item at that index
+    * Useful for accessing the last element `arr.at(-1)`
+  
+  * `forEach(callbackFn)`
+  
+  * `forEach(function(element, index, array) {})`
+  
+    * Executes a provided function once for each array element
+    * `element`: the current element being processed in the array
+    * `index`: the index of the current element being processed in the array
+    * `array`: the array that calls `forEach`
   
 
 ### Objects
@@ -616,6 +668,10 @@ Version: 1.0
     ```javascript
     const arr = [...s];
     ```
+  
+  * `forEach(function(value, key, map) {})`
+  
+    * `key` and `value` are the same
 
 ### Maps
 
@@ -674,6 +730,8 @@ Version: 1.0
     ```javascript
     const arr = [...m];
     ```
+  
+  * `forEach(function(value, key, map) {})`
 
 ### Strings
 
@@ -784,16 +842,19 @@ Version: 1.0
 * `document` is the special object that is the entry point to the DOM
 * DOM is a Web API that written in JavaScript
 
-#### Operations
+### Operations
 
 * Select and manipulate elements
 
   ```javascript
-  document.querySelector(".className").textContent = "new text";
-  document.getElementById("id");
-  // Multiple classes
-  // Craete a NodeList
-  document.querySelectorAll(".className")
+  const element = document.querySelector(".className");
+  const element 2 = document.getElementById("id");
+  // Multiple classes, craete a NodeList
+  const elements = document.querySelectorAll(".className");
+  
+  element.textContent = "new text";		 // content of the element
+  element.innerHTML = "";					// html
+  
   ```
 
 * Handle click events
@@ -837,6 +898,24 @@ Version: 1.0
   document.addEventListener("keydown", function(e) {})
   // use e.key to get which key is pressed
   ```
+
+* Add elements
+
+  ```javascript
+  // 1. Parses the specified text as HTML or XML and inserts the resulting nodes into the DOM tree at a specified position
+  // Para: 
+  // position: A string representing the position relative to the element. Must be one of the following strings:
+  // <!-- beforebegin -->
+  // <p>
+  //   <!-- afterbegin -->
+  //   foo
+  //   <!-- beforeend -->
+  // </p>
+  // <!-- afterend -->
+  element.insertAdjacentHTML(position, text);
+  ```
+
+  
 
 ***
 
