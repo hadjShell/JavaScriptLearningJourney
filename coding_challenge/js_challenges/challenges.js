@@ -339,9 +339,50 @@ const ages = [16, 6, 10, 5, 6, 1, 4];
 console.log(calcAverageHumanAge(ages));
 console.log(calcAverageHumanAge.toString()); */
 
-const arr = [1, 2, 3, 4];
-const arr2 = [1, 2, 3];
-const arr3 = arr2.concat(arr);
-console.log(arr);
-console.log(arr2);
-console.log(arr3);
+/* // Challenge 18
+const dogs = [
+    { weight: 22, curFood: 250, owners: ['Alice', 'Bob'] },
+    { weight: 8, curFood: 200, owners: ['Matilda'] },
+    { weight: 13, curFood: 275, owners: ['Sarah', 'John'] },
+    { weight: 32, curFood: 340, owners: ['Michael'] },
+];
+dogs.forEach(dog => dog.rcmdFood = dog.weight ** 0.75 * 28);
+
+function muchOrLittle(dog) {
+    if (dog.curFood > dog.rcmdFood)
+        return "Eating too much!";
+    else if (dog.curFood < dog.rcmdFood)
+        return "Eating too little!";
+    else
+        return "Perfect!";
+}
+function okay(dog) {
+    return dog.curFood >= 0.9 * dog.rcmdFood && dog.curFood <= 1.1 * dog.rcmdFood;
+}
+
+console.log("Sarah's dog: " + muchOrLittle(dogs.find(dog => dog.owners.includes("Sarah"))));
+
+const ownersEatTooMuch = dogs.reduce((ownersEatTooMuch, dog) =>
+    (dog.curFood > dog.rcmdFood) ? ownersEatTooMuch.concat(dog.owners) : ownersEatTooMuch,
+    []);
+const ownersEatTooLittle = dogs.reduce((ownersEatTooLittle, dog) =>
+    (dog.curFood < dog.rcmdFood) ? ownersEatTooLittle.concat(dog.owners) : ownersEatTooLittle,
+    []);
+console.log(`${ownersEatTooMuch.join(" and ")}'s dogs eat too much!
+${ownersEatTooLittle.join(" and ")}'s dogs eat too little!`);
+
+console.log(dogs.some(dog => muchOrLittle(dog) === "Perfect!"));
+console.log(dogs.some(okay));
+
+const okayDogs = dogs.reduce((okayDogs, dog) => {
+    if (okay(dog))
+        okayDogs.push(dog);
+    return okayDogs;
+}, []);
+console.log(okayDogs);
+
+const dogsCopy = [...dogs];
+dogsCopy.sort((a, b) => a.rcmdFood - b.rcmdFood);
+console.log(dogsCopy); */
+
+// Challenge 19
