@@ -338,3 +338,10 @@ function calcAverageHumanAge(dogs) {
 const ages = [16, 6, 10, 5, 6, 1, 4];
 console.log(calcAverageHumanAge(ages));
 console.log(calcAverageHumanAge.toString()); */
+
+const arr = [1, 2, 3, 4];
+const arr2 = [1, 2, 3];
+const arr3 = arr2.concat(arr);
+console.log(arr);
+console.log(arr2);
+console.log(arr3);

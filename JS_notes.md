@@ -385,8 +385,6 @@ Version: 1.0
 
   * Avoid chaining the methods that mutate the original object
 
-
-
 ***
 
 ## Built-in Data structure
@@ -405,6 +403,7 @@ Version: 1.0
 
   ```javascript
   const array = new Array(element1, element2);
+  const array2 = new Array(len);			// Empty array with length len
   ```
 
 * Can put values of different data types in one array
@@ -492,9 +491,12 @@ Version: 1.0
   
   * `slice`
   
-  * `splice`
+    * Create a shallow copy of array: `arr.slice()`
   
-    * Works similar as `slice`, but change the original array by taking the extracted elements
+  * `splice(start, deleteCount)`
+  
+    * Works similar as `slice`, but **change the original array** by taking the extracted elements
+    * Useful for deleting elements
   
   * `reverse`
   
@@ -521,10 +523,13 @@ Version: 1.0
   
   * `forEach(function(element, index, array) {})`
   
+  * `forEach((e, i, arr) => {})`
+  
     * Executes a provided function once for each array element
     * `element`: the current element being processed in the array
     * `index`: the index of the current element being processed in the array
     * `array`: the array that calls `forEach`
+    * Throw-away parameter: use `_` to name it
   
   * `map(callbackFn)`
   
@@ -554,8 +559,80 @@ Version: 1.0
   
   * `findLastIndex(callbackFn)`
   
-    * 
+    * Returns the index of the first / last element in an array that satisfies the provided testing function. If no elements satisfy the testing function, -1 is returned
   
+  * `some(callbackFn)`
+  
+    * Tests whether at least one element in the array passes the test implemented by the provided function
+    * Returns a boolean value
+    * It doesn't modify the array
+  
+  * `every(callbackFn)`
+  
+    * Tests whether all elements in the array pass the test implemented by the provided function
+  
+  * `flat(depth)`
+  
+    * Creates a new array with all sub-array elements concatenated into it recursively up to the specified depth
+    * `depth`: The depth level specifying how deep a nested array structure should be flattened. Defaults to 1
+  
+  * `fLatMap(callbackFm)`
+  
+    * Returns a new array formed by applying a given callback function to each element of the array, and then flattening the result by one level
+    * Identical to a `map()`followed by a `flat()` of depth 1 (`arr.map(callbackFn).flat()`), but slightly more efficient than calling those two methods separately
+  
+  * `sort(compareFn)`
+  
+  * `sort((a, b) => {})`
+  
+    * Sorts the elements of an array *[in place](https://en.wikipedia.org/wiki/In-place_algorithm)* and returns the reference to the same array, now sorted
+  
+    * The default sort order is ascending, built upon converting the elements into **strings**, then comparing their sequences of UTF-16 code units values
+  
+    * | `compareFn(a, b)` return value | sort order                         |
+      | :----------------------------- | :--------------------------------- |
+      | > 0                            | sort `a` after `b`                 |
+      | < 0                            | sort `a` before `b`                |
+      | === 0                          | keep original order of `a` and `b` |
+  
+    * Comparing numbers
+  
+      ```javascript
+      // ascending order
+      function compareNumbers(a, b) {
+        return a - b;
+      }
+      
+      // descending order
+      function compareNumbers(a, b) {
+        return b - a;
+      }
+      ```
+  
+  * `fill(value)`
+  
+  * `fill(value, start, end)`
+  
+    * Changes all elements in an array to a static value, from a start index (default `0`) to an end index (default `array.length`)
+    * Returns the modified array
+  
+  * `Array.from(arrayLike)`
+  
+  * `Array.from(arrayLike, mapFn)`
+  
+    * Creates a new, shallow-copied `Array` instance from an iterable or array-like object
+  
+    * `Array.from()` lets you create `Array` from:
+  
+      - [Iterable objects](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Iteration_protocols) (objects such as `Map` and `Set`); or, if the object is not iterable
+  
+      - Array-like objects (objects with a `length` property and indexed elements)
+  
+        ```javascript
+        const arr = Array.from({ length: 7 }, () => 1);
+        ```
+  
+  * ![array_method](img\array_method.png)
 
 ### Objects
 
@@ -855,6 +932,7 @@ Version: 1.0
   const newArr = [...oldArr];
   const newObj = {...oldObj};
   const newObj = Object.assign({}, oldObj);
+  newArr = oldArr.slice();
   ```
 
 * Deep clone

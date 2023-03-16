@@ -109,11 +109,28 @@ function userLoan(account, amount) {
     amount = Number(amount);
     const incomes = account.movements
         .filter(movement => movement > 0);
-    if (amount > 0 && incomes.find(income => income > amount * 0.1))
+    if (amount > 0 && incomes.some(income => income > amount * 0.1))
         account.movements.push(amount);
 }
 
+/**
+ * 
+ * @param {account} account 
+ * @param {string} username 
+ * @param {string} pin 
+ */
+function userCloseAccount(account, username, pin) {
+    pin = Number(pin);
+    const index = accounts.findIndex(account => account.username === username);
+    if (index !== -1 && username === account.username && pin === account.pin)
+        account.splice(index, 1);
+}
 
+function userSortMovements(account) {
+    return account.movements
+        .slice()
+        .sort((a, b) => a - b);
+}
 
 // UI functions
 function displayBalance(account) { }
@@ -125,6 +142,12 @@ function displayMovements(account) { }
 function transferMoney(account, inputUsername, inputAmount) { }
 
 function requestLoan(account, inputAmount) { }
+
+function closeAccount(account, inputUsername, inputPin) { }
+
+function sort() { }
+
+function logout() { }
 
 function displayUI(account) {
     labelWelcome.textContent = `Welcome back, ${account.owner.split(" ")[0]}`;
@@ -144,9 +167,12 @@ function updateUI(account) {
     displayMovements(account);
 }
 
+// Event handlers
+
 // System
 // System data
 let currentAccount = null;
+let sorted = false;
 
 // System functions
 function createUsernames(accounts) {
@@ -175,4 +201,3 @@ function userLogin(username, pin) {
 
 function init() { }
 
-// Event handlers
