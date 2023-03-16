@@ -61,23 +61,29 @@ const inputLoanAmount = document.querySelector('.form__input--loan-amount');
 const inputCloseUsername = document.querySelector('.form__input--user');
 const inputClosePin = document.querySelector('.form__input--pin');
 
+// System data
+let currentAccount = null;
+let sorted = false;
+
+///////////////////
 // User methods
 function userCalcBalance(account) {
     account.balance = account.movements.reduce((acc, movement) => acc + movement, 0);
+    return account.balance;
 }
 
 function userCalcSummary(account) {
     const incomes = account.movements
         .filter(movement => movement > 0);
     const income = incomes
-        .reduce((sum, movement) => sum + movement, 0);
+        .reduce((sum, movement) => sum + movement, 0) + "€";
     const outcome = account.movements
         .filter(movement => movement < 0)
-        .reduce((sum, movement) => sum - movement, 0);
+        .reduce((sum, movement) => sum - movement, 0) + "€";
     const interest = incomes
         .map(income => income * account.interestRate / 100)
         .filter(interest => interest >= 1)
-        .reduce((sum, interest) => sum + interest, 0);
+        .reduce((sum, interest) => sum + interest, 0) + "€";
     return [income, outcome, interest];
 }
 
@@ -122,8 +128,11 @@ function userLoan(account, amount) {
 function userCloseAccount(account, username, pin) {
     pin = Number(pin);
     const index = accounts.findIndex(account => account.username === username);
-    if (index !== -1 && username === account.username && pin === account.pin)
-        account.splice(index, 1);
+    if (index !== -1 && username === account.username && pin === account.pin) {
+        accounts.splice(index, 1);
+        return true;
+    }
+    return false;
 }
 
 function userSortMovements(account) {
@@ -132,49 +141,92 @@ function userSortMovements(account) {
         .sort((a, b) => a - b);
 }
 
+//////////////////////
 // UI functions
-function displayBalance(account) { }
-
-function displaySummary(account) { }
-
-function displayMovements(account) { }
-
-function transferMoney(account, inputUsername, inputAmount) { }
-
-function requestLoan(account, inputAmount) { }
-
-function closeAccount(account, inputUsername, inputPin) { }
-
-function sort() { }
-
-function logout() { }
-
-function displayUI(account) {
-    labelWelcome.textContent = `Welcome back, ${account.owner.split(" ")[0]}`;
-    containerApp.style.opacity = 100;
-    inputLoginUsername.textContent = "";
-    inputLoginPin.textContent = "";
-    inputLoginPin.blur();
-
-    updateUI(account);
+function displayBalance() {
+    labelBalance.textContent = userCalcBalance(currentAccount) + "€";
 }
 
-function updateUI(account) {
-    userCalcBalance(account);
-    userCalcSummary(account);
-    displayBalance(account);
-    displaySummary(account);
-    displayMovements(account);
+function displaySummary() {
+    [labelSumIn.textContent, labelSumOut.textContent, labelSumInterest.textContent] = userCalcSummary(currentAccount);
 }
 
-// Event handlers
+function displayMovements(movements = currentAccount.movements) {
+    containerMovements.innerHTML = "";
+    movements.forEach((movement, i) => {
+        const type = movement < 0 ? "withdrawal" : "deposit";
 
-// System
-// System data
-let currentAccount = null;
-let sorted = false;
+        const html = `<div class="movements__row">
+        <div class="movements__type movements__type--${type}">${i + 1} ${type}</div>
+        <div class="movements__value">${movement}€</div>
+      </div>`;
 
-// System functions
+        containerMovements.insertAdjacentHTML("afterbegin", html);
+    });
+}
+
+function transferMoney(e) {
+    e.preventDefault();
+    userTransfer(currentAccount, inputTransferTo.value, inputTransferAmount.value);
+    inputTransferTo.value = "";
+    inputTransferAmount.value = "";
+    inputTransferAmount.blur();
+
+    updateUI();
+}
+
+function requestLoan(e) {
+    e.preventDefault();
+    userLoan(currentAccount, inputLoanAmount.value);
+    inputLoanAmount.value = "";
+    inputLoanAmount.blur();
+
+    updateUI();
+}
+
+function sortUI(e) {
+    e.preventDefault();
+    sorted ? displayMovements(undefined) : displayMovements(userSortMovements(currentAccount));
+    sorted = !sorted;
+}
+
+function logoutUI() {
+    currentAccount = null;
+    sorted = false;
+    labelWelcome.textContent = `Log in to get started`;
+    containerApp.style.opacity = 0;
+}
+
+function closeAccount(e) {
+    e.preventDefault();
+    const logout = userCloseAccount(currentAccount, inputCloseUsername.value, inputClosePin.value);
+    inputCloseUsername.value = "";
+    inputClosePin.value = "";
+    if (logout) logoutUI();
+}
+
+function loginUI(e) {
+    login(inputLoginUsername.value, inputLoginPin.value);
+    if (currentAccount) {
+        e.preventDefault();
+        labelWelcome.textContent = `Welcome back, ${currentAccount.owner.split(" ")[0]}`;
+        containerApp.style.opacity = 100;
+        inputLoginUsername.value = "";
+        inputLoginPin.value = "";
+        inputLoginPin.blur();
+
+        updateUI();
+    }
+}
+
+function updateUI() {
+    displayBalance();
+    displaySummary();
+    displayMovements(undefined);
+}
+
+//////////////////////
+// System methodss
 function createUsernames(accounts) {
     accounts.forEach(account => {
         account.username = account.owner
@@ -191,13 +243,29 @@ function createUsernames(accounts) {
     * @param {string} username: user input
     * @param {string} pin:      user input
     * 
-    * @return currentAccount if {username} exists in the system and {pin} is correct; 
-    *         otherwise return null
+    * currentAccount if {username} exists in the system and {pin} is correct; 
+    * otherwise return null
  */
-function userLogin(username, pin) {
+function login(username, pin) {
     currentAccount = accounts.find(account => account.username === username);
     currentAccount = currentAccount && currentAccount.pin === Number(pin) ? currentAccount : null;
 }
 
-function init() { }
+function init() {
+    currentAccount = null;
+    sorted = false;
+    createUsernames(accounts);
+}
+
+init();
+
+/////////////////////
+// Event handlers
+btnLogin.addEventListener("click", loginUI);
+btnTransfer.addEventListener("click", transferMoney);
+btnLoan.addEventListener("click", requestLoan);
+btnClose.addEventListener("click", closeAccount);
+btnSort.addEventListener("click", sortUI);
+
+
 
