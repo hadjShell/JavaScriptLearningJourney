@@ -240,6 +240,15 @@ Version: 1.0
 
 * `if-else`
 
+  * This is allowed in JavaScript:
+
+    ```javascript
+    const y = 2;
+    if (y === 3) console.log(x);
+    const x = 1;
+    console.log(x);
+    ```
+
 * `switch`
 
 * `for`
@@ -1041,6 +1050,155 @@ Version: 1.0
 ***
 
 ## Numbers, Dates, Intl and Timers
+
+* Numbers
+
+  * Always float numbers
+
+  * Properties
+
+    * `MAX_SAFE_INTEGER`
+    * `MIN_SAFE_INTEGER`
+
+  * Methods (Global functions --- `Number` can be omitted)
+
+    * `Number.parseInt(string, radix)`
+
+      * parses a string argument and returns an integer of the specified radix
+
+      * `string`: a string **starting with an integer**. Leading whitespace in this argument is ignored
+
+        `radix`: the base in mathematical numeral systems
+
+    * `Number.parseFloat(string, radix)`
+    * `Number.isNaN(value)`
+      * Determines whether the passed value is the number value [`NaN`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/NaN), and returns `false` if the input is not of the Number type
+    * `Number.isFinite(value)`
+      * Determines whether the passed value is a finite number — that is, it checks that a given value is a number, and the number is neither positive `Infinity`, negative `Infinity`, nor `NaN`
+      * Check if `value` is a number
+    * `Number.isInteger(value)`
+    * `Number.prototype.toFixed(digits)`
+      * Formats a number using fixed-point notation
+
+* `Math`
+
+  * Do type coercion itself
+
+  * `Math.PI`
+
+  * `Math.max(val1, val2, valN)`
+
+  * `Math.min(val1, val2, valN)`
+
+  * `Math.random()`
+
+    * Returns a floating-point, pseudo-random number that's greater than or equal to 0 and less than 1, with approximately uniform distribution over that range — which you can then scale to your desired range
+
+  * `Math.trunc(val)`
+
+    * Returns the integer part of a number by removing any fractional digits
+
+  * `Math.round(val)`
+
+    * Returns the value of a number rounded to the nearest integer
+
+  * `Math.ceil(val)`
+
+    * Always rounds up and returns the smaller integer greater than or equal to a given number
+
+  * `Math.floor(val)`
+
+    * Always rounds down and returns the largest integer less than or equal to a given number
+
+    * Create a random integer within `(min, max]`
+
+      ```javascript
+      const randomInt = (min, max) => Math.trunc(Math.random() * (max - min) + 1) + min;
+      ```
+
+* Numeric separators
+
+  ```javascript
+  const diameter = 287_460_000_000;
+  const price = 345_99;
+  ```
+
+* `BigInt`
+
+  * with `n` suffix: `56435468453453453453453454344684868n`
+  * Cannot mix `BigInt` and other types except logical operators and `+` with String
+  * Division of `BigInt`: works like C `int`
+
+* `Date`
+
+  * `new Date()`
+    * Returns a string representing the current time
+  * `new Date(dateString)`
+    * ISO 8601 format (`YYYY-MM-DDTHH:mm:ss.sssZ`)
+  * `new Date(year, monthIndex, day, hours, minutes, seconds, milliseconds)`
+    * `monthIndex` starts with 0
+  * `new Date(value)`
+    * `value`: an integer value representing the number of milliseconds since `January 1, 1970, 00:00:00 UTC` (the ECMAScript epoch, equivalent to the UNIX epoch), with leap seconds ignored
+  * `getFullYear()`
+  * `getMonth()`
+  * `getDate()`
+  * `getDay()`
+    * 0 represents Sunday
+  * `getHours()`
+  * `getMinutes()`
+  * `getSeconds()`
+  * `set...()`
+  * `toISOString()`
+  * `getTime()`
+    * Returns the number of milliseconds since the [epoch](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date#the_ecmascript_epoch_and_timestamps)
+    * The return value is called *timestamp*
+  * `Date.now()`
+    * Returns the current timestamp
+
+* `Intl`
+
+  * The namespace for the ECMAScript Internationalization API, which provides language sensitive string comparison, number formatting, and date and time formatting
+  * `Intl.DateTimeFormat(locale, options).format(date)`
+    * Formats a date according to the locale and formatting options
+    * [`options`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/DateTimeFormat/DateTimeFormat)
+  * `Intl.NumberFormat(locale, options).format(num)`
+    * Formats a number
+
+* Timers
+
+  * `setTimeout(callbackFn, dalay, param1, param2, paramn)`
+
+    * Sets a timer which executes a function or specified piece of code once the timer expires
+    * Returns an timeout ID which uniquely identifies the timeout
+    * `delay`: in milliseconds
+    * `param`: additional arguments which are passed through to the function specified by `functionRef`
+    * `setTimeout()` is an **asynchronous function**, meaning that the timer function will not pause execution of other functions in the functions stack
+
+  * `clearTimeout(timeoutID)`
+
+    * cancels a timeout previously established by calling `setTimeout()`
+    * If the parameter provided does not identify a previously established action, this method does nothing
+
+  * `setInterval(callbackFn, delay, params)`
+
+    * Returns an interval ID which uniquely identifies the interval
+
+    * Repeatedly calls a function or executes a code snippet, with a fixed time delay between each call
+
+    * `callbackFn` is not called immediately, actually get called after one second
+
+      * Solution:
+
+        ```javascript
+        callbackFn();
+        const timer = setInterval(callbackFn, delay);
+        ```
+
+        
+
+  * `clearInterval(intervalID)`
+
+  * 
 
 ***
 
