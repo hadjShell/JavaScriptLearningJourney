@@ -1198,8 +1198,6 @@ Version: 1.0
 
   * `clearInterval(intervalID)`
 
-  * 
-
 ***
 
 ## OOP
