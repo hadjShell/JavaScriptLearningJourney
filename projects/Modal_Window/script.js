@@ -1,9 +1,14 @@
 "use strict";
 
-const btnShowModal = document.querySelectorAll(".show-modal");
 const modal = document.querySelector(".modal");
-const btnClose = document.querySelector(".close-modal");
 const overlay = document.querySelector(".overlay");
+
+const btnShowModal = document.querySelectorAll(".btn--show-modal");
+const btnCloseModal = document.querySelector(".btn--close-modal");
+const btnScroll = document.querySelector(".btn--scroll-to");
+
+const section1 = document.getElementById("section--1");
+
 
 // Event handler for show modal buttons
 function showModal() {
@@ -23,9 +28,9 @@ function closeModalByEscape(e) {
         closeModalByMouse();
 }
 
-for (let i = 0; i < 3; i++) {
-    btnShowModal[i].addEventListener("click", showModal);
-}
-btnClose.addEventListener("click", closeModalByMouse);
+btnShowModal.forEach(e => e.addEventListener("click", showModal));
+btnCloseModal.addEventListener("click", closeModalByMouse);
 overlay.addEventListener("click", closeModalByMouse);
 document.addEventListener("keydown", closeModalByEscape);
+
+btnScroll.addEventListener("click", () => section1.scrollIntoView({ behavior: "smooth" }));

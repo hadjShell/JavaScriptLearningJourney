@@ -657,7 +657,7 @@ Version: 1.0
   };
   ```
 
-  * `key` are always strings
+  * `key` are always **strings**
 
   * It's not a block scope
 
@@ -961,56 +961,177 @@ Version: 1.0
 * DOM is automatically created by the browser as soon as the HTML page loads
 * A **tree** structure
 * ![DOM](img\DOM.png)
-* `document` is the special object that is the entry point to the DOM
 * DOM is a Web API that written in JavaScript
+* **DOM objects are unique**
+* *Every single node in the DOM tree is the type **`Node`***
+  * Represented by JavaScript object
+  * `textContent`, `childNodes`, `parentNode`, `cloneNode()`, etc
+  * `Node` child classes
+    * `Element`
+      * `HTMLElemnt`
+        * `HTMLButtonElement`
+        * ...
+        * `HTMLDivElement`
+
+    * `Text`
+    * `Comment`
+    * `Document`
+      * The special object that is the entry node of the DOM
+
+  * `Node` inherits `EventTarget` which has two methods
+    * `addEventListener()`
+    * `removeEventListener()`
+
+  * ![node](img\node.png)
+
 
 ### Operations
 
-* Select and manipulate elements
+* Select elements
 
-  ```javascript
-  const element = document.querySelector(".className");
-  const element 2 = document.getElementById("id");
-  // Multiple classes, craete a NodeList
-  const elements = document.querySelectorAll(".className");
-  
-  element.textContent = "new text";		 // content of the element
-  element.innerHTML = "";					// html
-  
-  ```
+  * `document`
+    * The `Document` object represents your web page
 
-* Handle click events
+  * `document.documentElement`
+    * Returns the `Element` that is a direct child of the document. For HTML documents, this is normally the `HTMLHtmlElement` object representing the document's `<html>` element
+
+  * `document.head`
+  * `document.body`
+  * `document.querySelector(selector)`
+    * Returns the first `Element` within the document that matches the specified selector
+    * `selector`
+      * A string containing one or more selectors to match. This string must be a valid CSS selector string
+
+  * `document.querySelectorAll(selector)`
+    * Returns a `NodeList` of `Element`s
+
+  * `document.getElementByID(id)`
+  * `document.getElementsByTagName(name)`
+    * Returns an `HTMLCollection` of elements with the given tag name
+    * The returned `HTMLCollection` is live, meaning that it updates itself automatically to stay in sync with the DOM tree without having to call `document.getElementsByTagName()` again
+
+  * `document.getElementsByClassName(className)`
+    * Returns an `HTMLCollection` of elements with the given class name
+
+  * `Element.querySelector()`
+  * `Element.getElementsByTagName(name)`
+
+* Create and insert elements
+
+  * `Element.insertAdjacentHTML(position, text)`
+
+    * Parses the specified text as HTML or XML and inserts the resulting nodes into the DOM tree at a specified position
+
+    * `position`
+
+      * A string representing the position relative to the element. Must be one of the following strings:
+
+      * ```javascript
+        // <!-- beforebegin -->
+        // <p>
+        //   <!-- afterbegin -->
+        //   foo
+        //   <!-- beforeend -->
+        // </p>
+        // <!-- afterend -->
+        ```
+
+  * `document.createElement(tagName)`
+
+    * Returns a new created `Element` specified by `tagName`
+
+  * `Node.cloneNode(deep)`
+
+    * Return a new cloned `Node`. The cloned node has no parent and is not part of the document, *until* it is added to another node that is part of the document
+
+    * `deep`
+      * If `true`, then the node and its whole subtree, including text that may be in child `Text` nodes, is also copied
+      * If `false`, only the node will be cloned. The subtree, including any text that the node contains, is not cloned
+
+  * `Element.prepend(para1, paraN)`
+
+    * Inserts a set of `Node`objects or string objects before the first child of the `Element`
+    * String objects are inserted as equivalent `Text` nodes
+
+  * `Element.append(para1, paraN)`
+
+    * Inserts a set of `Node`objects or string objects after the first child of the `Element`
+
+  * `Element.before(para1, paraN)`
+
+    * Inserts a set of `Node`objects or string objects in the children list of this `Element`'s parent, just before this `Element`
+
+  * `Element.after(para1, paraN)`
+
+    * Inserts a set of `Node`objects or string objects in the children list of this `Element`'s parent, just after this `Element`
+
+* Delete elements
+
+  * `Element.remove()`
+    * Removes the element from the DOM
+
+* Manipulate elements
+
+  * `Element.${attribute}`
+  * `Node.textContent`
+    * Represents the text content of the node and its descendants
+    * Setting `textContent` on a node removes *all* of the node's children and replaces them with a single text node with the given string value
+
+  * `Element.innerHTML`
+    * Gets or sets the HTML or XML markup contained within the element
+
+  * `HTMLInputElement.value`
+    * Returns a String
+
+  * `HTMLElement.style.${property} = ""`
+    * Returns the *inline* style of an element in the form of a `CSSStyleDeclaration` object
+    * Will not change the CSS file; add an inline style attribute
+
+  * `Window.getComputedStyle(element)`
+    * Returns an object containing the values of all CSS properties of an element, after applying active stylesheets and resolving any basic computation those values may contain
+
+  * `Element.classList`
+    * Returns a **live** [`DOMTokenList`](https://developer.mozilla.org/en-US/docs/Web/API/DOMTokenList) collection of the `class` attributes of the element
+    * `contains()`
+    * `add()`
+    * `remove()`
+    * `toggle()`
+      * Add if not contains, remove if contains
+
+    * Add and remove classes is the main way to manipulate the styles instead of manipulating `style` directly
+
+  * `ELement.src`
+    * Absolute url
+
+  * `Element.getAttribute("src")`
+    * Relative url
+
+  * `Element.dataset.${}`
+    * Data attributes
+
+* Coordinates
+
+  * `Element.getBoundingClientRect()`
+  * `window.pageXOffset`
+  * `window.pageYOffset`
+  * `window.scrollTo()`
+    * Old way
+
+  * `Element.scrollIntoView(scrollIntoViewOptions)`
+    * Modern way
+
+* Event and event handlers
 
   * An event is something happened on the page
   * **JavaScript will generate an object which contains all the information about the event when an event occurs**
+  * The callback accepts a single parameter: an object based on [`Event`](https://developer.mozilla.org/en-US/docs/Web/API/Event) describing the event that has occurred, and it returns nothing
 
   ```javascript
   /* para1: type of the event
      para2: event function handler
   */
-  document.querySelector(".btn").addEventListener('click', function() {})
+  document.querySelector(".btn").addEventListener('click', function(e) {})
   ```
-
-* Manipulate CSS style
-
-  ```javascript
-  // value is always a string
-  document.querySelector("body").style.brackgroundColor = "#ffffff";
-  ```
-
-  * Will not change the CSS file; add an inline style attribute
-
-* Working with classes
-
-  ```javascript
-  const element = document.querySelector(".className1");
-  // check the class names of the element
-  // add, remove, contains, toggle, etc.
-  // toggle: add if not contains, remove if contains
-  element.classList.remove("className2");
-  ```
-
-  * Add and remove classes is the main way to manipulate the styles instead of manipulating `style` directly
 
 * Response with keyboard events
 
@@ -1021,23 +1142,7 @@ Version: 1.0
   // use e.key to get which key is pressed
   ```
 
-* Add elements
-
-  ```javascript
-  // 1. Parses the specified text as HTML or XML and inserts the resulting nodes into the DOM tree at a specified position
-  // Para: 
-  // position: A string representing the position relative to the element. Must be one of the following strings:
-  // <!-- beforebegin -->
-  // <p>
-  //   <!-- afterbegin -->
-  //   foo
-  //   <!-- beforeend -->
-  // </p>
-  // <!-- afterend -->
-  element.insertAdjacentHTML(position, text);
-  ```
-
-* Prevent `<form>` from submmiting
+* Prevent `<form>` from submiting
 
   ```javascript
   e.preventDefault();			// Stop page reloading after sbumitting
@@ -1147,11 +1252,11 @@ Version: 1.0
   * `getHours()`
   * `getMinutes()`
   * `getSeconds()`
-  * `set...()`
-  * `toISOString()`
   * `getTime()`
     * Returns the number of milliseconds since the [epoch](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date#the_ecmascript_epoch_and_timestamps)
     * The return value is called *timestamp*
+  * `set...()`
+  * `toISOString()`
   * `Date.now()`
     * Returns the current timestamp
 
