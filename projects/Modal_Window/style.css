@@ -43,7 +43,7 @@ body {
 
 .section--hidden {
   opacity: 0;
-  transform: translateY(8rem);
+  transform: translateY(9rem);
 }
 
 .section__title {
@@ -356,18 +356,23 @@ h4 {
 .operations__icon--1 {
   background-color: var(--color-secondary-opacity);
 }
+
 .operations__icon--2 {
   background-color: var(--color-primary-opacity);
 }
+
 .operations__icon--3 {
   background-color: var(--color-tertiary-opacity);
 }
+
 .operations__icon--1 svg {
   fill: var(--color-secondary-darker);
 }
+
 .operations__icon--2 svg {
   fill: var(--color-primary);
 }
+
 .operations__icon--3 svg {
   fill: var(--color-tertiary);
 }
@@ -397,7 +402,7 @@ h4 {
   transition: transform 1s;
 }
 
-.slide > img {
+.slide>img {
   /* Only for images that have different size than slide */
   width: 100%;
   height: 100%;

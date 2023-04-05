@@ -25,7 +25,6 @@ Version: 1.0
     * Electron
 * JavaScript is a multi-paradigm interpreted language
   * Modern JavaScript uses just-in-time compilation (no portable files)
-
 * JavaScript runtime
   * Container including all the things that we need to use JavaScript
   * Different types of JavaScript runtime
@@ -41,7 +40,6 @@ Version: 1.0
     * JavaScript engine
     * C++ bindings and thread pool
     * Callback queue
-
 * JavaScript versions
   * ES6 / ES2015: biggest update to this language
   * New updates to JS every single year
@@ -63,11 +61,20 @@ Version: 1.0
   * External JavaScript files
     * Put code in the `.js` files in the same folder of HTML files
     * Tag `<script src=""></script>` 
-
 * Strict mode
   * Put `'use strict';` statement in the beginning of the `.js` file
   * Forbid to do certain things
   * Create visible errors
+* Script Loading
+  * ![script_loading](img\script_loading.png)
+  * Async in head
+    * Scripts not guaranteed to execute in order
+    * Use for 3rd-party scripts where order doesn't matter
+
+  * Defer in head
+    * Scripts are executed in order
+    * Overall best solution
+
 
 
 ***
@@ -977,12 +984,30 @@ Version: 1.0
     * `Comment`
     * `Document`
       * The special object that is the entry node of the DOM
-
   * `Node` inherits `EventTarget` which has two methods
     * `addEventListener()`
     * `removeEventListener()`
-
   * ![node](img\node.png)
+* DOM traversal
+  * `Element.children`
+    * Returns a live `HTMLCollection` which contains all of the child `elements` of the element upon which it was called
+    * Includes only element nodes
+
+  * `Element.childNodes`
+    * Returns a live `NodeList` of child `nodes` of the given element where the first child node is assigned index `0`
+
+  * `Element.parentNode`
+  * `Element.parentElement`
+    * Direct parent
+
+  * **`Element.closest(selector)`**
+    * Traverses the element and its parents (heading toward the document root) until it finds a node that matches the specified selector
+
+  * `Element.previousElementSibling`
+  * `Element.nextElementSibling`
+  * `Element.previousSibling`
+  * `Element.nextSibling`
+
 
 
 ### Operations
@@ -1087,7 +1112,7 @@ Version: 1.0
     * Returns the *inline* style of an element in the form of a `CSSStyleDeclaration` object
     * Will not change the CSS file; add an inline style attribute
 
-  * `Window.getComputedStyle(element)`
+  * `window.getComputedStyle(element)`
     * Returns an object containing the values of all CSS properties of an element, after applying active stylesheets and resolving any basic computation those values may contain
 
   * `Element.classList`
@@ -1120,20 +1145,45 @@ Version: 1.0
   * `Element.scrollIntoView(scrollIntoViewOptions)`
     * Modern way
 
-* Event and event handlers
+* [Intersection Observer API](https://developer.mozilla.org/en-US/docs/Web/API/Intersection_Observer_API)
+
+  ```javascript
+  const obsCallbackFn = function (entries, observer) {}
+  const obsOptions = {
+      root: null,
+      threshold: [0, 0.2]
+  };
+  const observer = new IntersectionObserver(obsCallbackFn, obsOptions);
+  observer.observe(element);
+  ```
+
+  * Sticky nav
+  * Lazy loaded images
+
+### Event and event handlers
 
   * An event is something happened on the page
   * **JavaScript will generate an object which contains all the information about the event when an event occurs**
-  * The callback accepts a single parameter: an object based on [`Event`](https://developer.mozilla.org/en-US/docs/Web/API/Event) describing the event that has occurred, and it returns nothing
+  * The callback function accepts a single parameter: an object based on [`Event`](https://developer.mozilla.org/en-US/docs/Web/API/Event) describing the event that has occurred, and it returns nothing
+  * ***In an event handler function, `this` always points to the element on which that handler is attached to***
 
   ```javascript
   /* para1: type of the event
      para2: event function handler
   */
   document.querySelector(".btn").addEventListener('click', function(e) {})
+  
+  // pass parameters into callback function
+  function callbackFn(e, para) {}
+  e.addEventListener("click", function (e) { callbackFn(e, para) });
+  
+  // or
+  function callbackFn(e, this) {}
+  e.addEventListener("click", callbackFn.bind(para));
   ```
 
-* Response with keyboard events
+  * Response with keyboard events
+
 
   ```javascript
   // keyup, keypress, keydown --- three conditions of interacting with a key on the keyboard
@@ -1142,14 +1192,31 @@ Version: 1.0
   // use e.key to get which key is pressed
   ```
 
-* Prevent `<form>` from submiting
+* `removeEventListener()`
+* `e.preventDefault()`
+* `e.target`
+  * A reference to the object onto which the event was dispatched
 
-  ```javascript
-  e.preventDefault();			// Stop page reloading after sbumitting
-  ```
+* `e.currentTarget`
+  * The current target for the event, as the event traverses the DOM
 
-* `blur()`
-
+* Event propagation
+    * Capturing phase
+      * Event happens, travels all the way down from `document` to the target element
+      * Pass through every single parent of the target
+    * Target phase
+      * Events can be handled right at the target
+    * Bubbling phase
+      * Events bubble up from target element to `document`
+      * Normally `addEventListener` happens in this phase
+      * `addEventListener(event, callbackFn, true)` will listen to event in capture phase
+    * Not all events have these phases
+    * Stop propagation: `e.stopPropagation()`
+    * **Event delegation**
+      * Take advantage of event propagation that add one event listener to the container of similar events instead of add same event listeners to all of them
+      * Use `e.target`
+      * Matching strategy
+      * Guard clause (Guard `null` pointer)
 * 
 
 ***
