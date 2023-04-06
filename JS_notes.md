@@ -173,9 +173,9 @@ Version: 1.0
 
 * Reference data type
 
-  * Object literal
-  * Arrays
-  * Functions
+  * Object
+  * Array
+  * Function
   * Etc.
 
 * `typeof` operator
@@ -1372,5 +1372,60 @@ Version: 1.0
 
 ***
 
-## OOP
+## OOP In JavaScript
 
+* Prototype and Object
+  * In terms of Class and Instance (but not the same)
+    * JavaScript doesn't have Class
+  * Objects are linked to a prototype object
+  * Prototypal inheritance/delegation: the prototype contains methods that are accessible to all objects linked to that prototype
+* Three ways of implementing OOP in JavaScript
+  * Constructor functions
+    * Technique to create objects from a function
+    * This is how built-in objects like Arrays, Maps or Sets are actually implemented
+  * ES6 Classess
+    * Modern alternative to constructor function syntax
+    * "Syntactic sugar": works like constructor functions behind the scenes
+    * Do NOT behave like classical OOP
+  * `Object.create()`
+* `instanceof` operator
+
+### Constructor function
+
+* Syntax
+
+  ```javascript
+  const ClassNmae = function (state1, state2) {
+      this.state1 = state1;
+      this.state2 = state2;
+  }
+  ClassName.prototype.method1 = function () {}
+  ClassName.prototype.method2 = function () {}
+  const obj = new ClassName(para1, para2);
+  ```
+
+* Works done behind `new`
+
+  1.  An empty object is created 
+  2. The function is called, `this` is linked to the empty object
+  3. The empty object is linked to prototype
+  4. Return the newly created object automatically
+
+* Never declare methods in constructor functions
+
+* Every object in JavaScript automatically has a property `prototype`
+
+* ***Every object that is created by a certain constructor function will get access to all the methods and properties that we define on the constructors prototype property***
+
+* `ClassName.prototype` is an object which is the prototype of the `obj`
+
+  * `obj.__proto__ === ClassName.prototype`
+  * `ClassName.prototype.isPrototypeOf(obj) === true`
+  * `ClassName.prototype.isPrototypeOf(ClassName) === false`
+  * `ClassName.prototype.constructor === ClassName`
+
+* Prototype chain
+
+  ![prototype_chain](img\prototype_chain.png)
+
+* 
