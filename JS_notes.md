@@ -683,7 +683,7 @@ Version: 1.0
         openingHours,
         // Second enhancement: function in object
         check() {},
-        // Thirf enhancement: computing property name
+        // Third enhancement: computing property name
         [arr[0]]: "John" 
     };
     ```
@@ -1395,9 +1395,9 @@ Version: 1.0
 * Syntax
 
   ```javascript
-  const ClassNmae = function (state1, state2) {
-      this.state1 = state1;
-      this.state2 = state2;
+  const ClassNmae = function (field1, field2) {
+      this.field1 = field1;
+      this.field2 = field2;
   }
   ClassName.prototype.method1 = function () {}
   ClassName.prototype.method2 = function () {}
@@ -1428,4 +1428,90 @@ Version: 1.0
 
   ![prototype_chain](img\prototype_chain.png)
 
-* 
+* Static methods
+
+  * Methods attached to the constructor function instead of its prototype
+
+    ```javascript
+    ClassName.helper = function() {}
+    ```
+
+### ES6 Classes
+
+* Not the actual `Class`, just another way of using constructor functions
+
+* Syntax
+
+  ```javascript
+  class ClassName {
+      constructor(field1, field2) {
+          this.field1 = field1;
+          this.field2 = field2;
+      }
+      
+      method1() {}
+      method2() {}
+      static helper() {}
+  }
+  ```
+
+* Getter and setter
+
+  * Existed to make code more clear
+
+  ```javascript
+  class Person {
+      constructor(birthYear) {
+          this.birthYear = birthYear;
+      }
+      // getter
+      get age() {
+          return 2023 - this.birthYear;
+      }
+      // setter
+      set age(age) {
+          this.birthYear = 2023 - age;
+      }
+  }
+  
+  const sam = new Person(2000);
+  console.log(sam.age);		// not sam.age()
+  sam.age = 30;			   // will change the birthYear
+  ```
+
+### `Object.create`
+
+* Syntax
+
+  ```javascript
+  const ClassName() {}
+  const obj = Object.create(ClassName);
+  ```
+
+* ==Be aware of the difference==
+
+### Inheritance
+
+* Constructor function
+
+  ```javascript
+  const Person = function (firstName, birthYear) {
+    this.firstName = firstName;
+    this.birthYear = birthYear;
+  };
+  Person.prototype.calcAge = function () {
+    console.log(2037 - this.birthYear);
+  };
+  const Student = function (firstName, birthYear, course) {
+    Person.call(this, firstName, birthYear);
+    this.course = course;
+  };
+  // Linking prototypes
+  Student.prototype = Object.create(Person.prototype);
+  Student.prototype.constructor = Student;
+  Student.prototype.introduce = function () {
+    console.log(`My name is ${this.firstName} and I study ${this.course}`);
+  };
+  ```
+
+  
