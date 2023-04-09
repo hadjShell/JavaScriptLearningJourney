@@ -1198,15 +1198,11 @@ Version: 1.0
   ```
 
 * `removeEventListener()`
-
 * `e.preventDefault()`
-
 * `e.target`
   * A reference to the object onto which the event was dispatched
-
 * `e.currentTarget`
   * The current target for the event, as the event traverses the DOM
-
 * Event propagation
     * Capturing phase
       * Event happens, travels all the way down from `document` to the target element
@@ -1224,8 +1220,6 @@ Version: 1.0
       * Use `e.target`
       * Matching strategy
       * Guard clause (Guard `null` pointer)
-    
-    
 
 ***
 
@@ -1614,6 +1608,111 @@ Version: 1.0
         return true;
       }
     }
+    ```
+
+
+***
+
+## Asynchronous JavaScript
+
+* Synchronous code is executed line by line
+* Long-running operations block code execution
+* Asynchronous code is executed after a task that runs in the background finishes
+* Asynchronous code is non-blocking
+
+### AJAX
+
+* Asynchronous JavaScript And XML
+
+* Allow us to communicate with remote web servers in an asynchronous way
+
+* With AJAX calls, we can request data from web server dynamically
+
+* XML data format is not used anymore
+
+* JSON is the most popular data format now
+
+* Old way
+
+  ```javascript
+  const request = new XMLHttpRequest();
+  request.open("GET", ${url});
+  request.send();
+  request.addEventListener("load", function() {
+      const [data] = JSON.parse(this.responseText);
+      ...
+  });
+  ```
+
+* Call back hell
+
+  * The problem of nested callback functions for executing asynchronous operations in order
+
+* Modern way
+
+  * Fetch API
+
+    * `fetch(url)`
+      * Starts the process of fetching a resource from the network, returning a **promise** which is fulfilled once the response is available
+      * Only rejects when a network error is encountered
+    * `Promise.prototype.then(onFulfilled, onRejected)`
+      * It immediately returns an equivalent `Promise` object, allowing you to chain calls to other promise methods
+      * `onFulfilled`
+        * Its return value becomes the fulfillment value of the promise returned by `then()`
+        * The function is called with the following arguments `value`: The value that the promise was fulfilled with
+        * If it is not a function, it is internally replaced with an *identity* function (`(x) => x`) which simply passes the fulfillment value forward
+      * `onRejected`
+        *  Its return value becomes the fulfillment value of the promise returned by `catch()`
+        * The function is called with the following arguments `reason`: The value that the promise was rejected with
+        * If it is not a function, it is internally replaced with a *thrower* function (`(x) => { throw x; }`) which throws the rejection reason it received
+    * `Promise.prototype.catch()`
+      * It is a shortcut for `Promise.prototype.then(undefined, onRejected)`
+
+  * Promises
+
+    * An object that is used as a placeholder for the future result of an asynchronous operation
+    * We no longer need to rely on events and callbacks passed into asynchronous functions to handle asynchronous results
+    * Instead of nesting callbacks, we can chain promises for a sequence of asynchronous operations
+    * Lifecycle
+      * Pending
+      * Settled
+        * Asynchronous tasks are finished 
+        * Fulfilled or Rejected
+      * Build promises
+      * Consume promises
+
+  * Example
+
+    ```javascript
+    const getJSON = function (url, errorMsg = 'Something went wrong') {
+      return fetch(url).then(response => {
+        if (!response.ok) throw new Error(`${errorMsg} (${response.status})`);
+        return response.json();		// create a new promise
+      });
+    };
+    
+    const getCountryData = function (country) {
+      // Country 1
+      getJSON(
+        `https://restcountries.eu/rest/v2/name/${country}`,
+        'Country not found'
+      )
+        .then(data => {
+          renderCountry(data[0]);
+          const neighbour = data[0].borders[0];
+          if (!neighbour) throw new Error('No neighbour found!');
+          // Country 2
+          return getJSON(
+            `https://restcountries.eu/rest/v2/alpha/${neighbour}`,
+            'Country not found'
+          );
+        })
+        .then(data => renderCountry(data))
+        .catch(err => {
+          console.error(`${err} 💥💥💥`);
+          renderError(`Something went wrong 💥💥 ${err.message}. Try again!`);
+        })
+    };
     ```
 
     
