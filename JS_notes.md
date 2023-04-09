@@ -365,10 +365,17 @@ Version: 1.0
 * `this`
 
   * Depends on how the function is called, which means it is **dynamic**
+
   * In method, `this` points to the owner of the function
+
   * In regular function, `this` points to `undefined` (in strict mode; otherwise points to `window`)
+
+    > For example, `this` in the callback functions
+
   * In arrow function, `this` will be the `this` of the parent function
+
   * ***In an event handler function, `this` always points to the element on which that handler is attached to***
+
   * Manually tell how it should behave
     * `func.call(thisArg, args)`
       * Calls the function with a given `this` value and arguments provided individually
@@ -1008,8 +1015,6 @@ Version: 1.0
   * `Element.previousSibling`
   * `Element.nextSibling`
 
-
-
 ### Operations
 
 * Select elements
@@ -1165,7 +1170,7 @@ Version: 1.0
   * An event is something happened on the page
   * **JavaScript will generate an object which contains all the information about the event when an event occurs**
   * The callback function accepts a single parameter: an object based on [`Event`](https://developer.mozilla.org/en-US/docs/Web/API/Event) describing the event that has occurred, and it returns nothing
-  * ***In an event handler function, `this` always points to the element on which that handler is attached to***
+  * **In an event handler function *(except arrow function)*, `this` always points to the element on which that handler is attached to**
 
   ```javascript
   /* para1: type of the event
@@ -1193,7 +1198,9 @@ Version: 1.0
   ```
 
 * `removeEventListener()`
+
 * `e.preventDefault()`
+
 * `e.target`
   * A reference to the object onto which the event was dispatched
 
@@ -1217,7 +1224,8 @@ Version: 1.0
       * Use `e.target`
       * Matching strategy
       * Guard clause (Guard `null` pointer)
-* 
+    
+    
 
 ***
 
@@ -1244,12 +1252,15 @@ Version: 1.0
 
     * `Number.parseFloat(string, radix)`
     * `Number.isNaN(value)`
+      
       * Determines whether the passed value is the number value [`NaN`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/NaN), and returns `false` if the input is not of the Number type
     * `Number.isFinite(value)`
+      
       * Determines whether the passed value is a finite number — that is, it checks that a given value is a number, and the number is neither positive `Infinity`, negative `Infinity`, nor `NaN`
       * Check if `value` is a number
     * `Number.isInteger(value)`
     * `Number.prototype.toFixed(digits)`
+      
       * Formats a number using fixed-point notation
 
 * `Math`
