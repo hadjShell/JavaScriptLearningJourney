@@ -426,6 +426,17 @@ console.log(dogsCopy); */
 // tesla.chargeBattery(90);
 // tesla.acc();
 
-let a = [];
-a = [1, 2];
-console.log(a);
+// Challenge 21
+function whereAmI(lat, lng) {
+    fetch(`https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${lat}&longitude=${lng}&localityLanguage=en`)
+        .then(response => {
+            if (!response.ok) throw new Error(`Something went wrong! ${response.state}`);
+            return response.json();
+        })
+        .then(data => console.log(`You are in ${data.city}, ${data.countryName}`))
+        .catch(err => console.error(`${err}`));
+}
+
+whereAmI(52.508, 13.381);
+whereAmI(19.037, 72.873);
+whereAmI(-33.933, 18.474);

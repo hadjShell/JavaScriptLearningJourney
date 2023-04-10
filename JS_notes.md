@@ -1650,35 +1650,50 @@ Version: 1.0
 
 * Modern way
 
-  * Fetch API
+  * `Fetch` API
 
     * `fetch(url)`
       * Starts the process of fetching a resource from the network, returning a **promise** which is fulfilled once the response is available
-      * Only rejects when a network error is encountered
+      * Only rejects **when a network error is encountered**
     * `Promise.prototype.then(onFulfilled, onRejected)`
       * It immediately returns an equivalent `Promise` object, allowing you to chain calls to other promise methods
-      * `onFulfilled`
+      * `onFulfilled(value)`
         * Its return value becomes the fulfillment value of the promise returned by `then()`
         * The function is called with the following arguments `value`: The value that the promise was fulfilled with
         * If it is not a function, it is internally replaced with an *identity* function (`(x) => x`) which simply passes the fulfillment value forward
-      * `onRejected`
+      * `onRejected(error)`
         *  Its return value becomes the fulfillment value of the promise returned by `catch()`
-        * The function is called with the following arguments `reason`: The value that the promise was rejected with
+        * The function is called with the following arguments `error`: The `erro` that the promise was rejected with
         * If it is not a function, it is internally replaced with a *thrower* function (`(x) => { throw x; }`) which throws the rejection reason it received
     * `Promise.prototype.catch()`
       * It is a shortcut for `Promise.prototype.then(undefined, onRejected)`
 
   * Promises
 
-    * An object that is used as a placeholder for the future result of an asynchronous operation
+    * An **object** that is used as a placeholder for the future result of an asynchronous operation
+
     * We no longer need to rely on events and callbacks passed into asynchronous functions to handle asynchronous results
+
     * Instead of nesting callbacks, we can chain promises for a sequence of asynchronous operations
+
+    * A Promise is a JavaScript object that links producing code and consuming code
+
     * Lifecycle
       * Pending
+      
       * Settled
         * Asynchronous tasks are finished 
+        
         * Fulfilled or Rejected
+        
+        * | myPromise.state | myPromise.result |
+          | :-------------- | :--------------- |
+          | "pending"       | `undefined`      |
+          | "fulfilled"     | a result value   |
+          | "rejected"      | an error object  |
+        
       * Build promises
+      
       * Consume promises
 
   * Example
@@ -1715,4 +1730,16 @@ Version: 1.0
     };
     ```
 
-    
+
+  * a
+
+***
+
+## Web APIs
+
+* Browser APIs
+  * All browsers have a set of built-in Web APIs to support complex operations, and to help accessing data
+  * `Fetch` API
+  * [`Geoloaction` API](https://www.w3schools.com/js/js_api_geolocation.asp)
+  * [`Strorage` API](https://www.w3schools.com/js/js_api_web_storage.asp)
+* Server APIS (Third party APIs)
