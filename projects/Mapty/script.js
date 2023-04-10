@@ -1,4 +1,5 @@
-'use strict';
+import L from "leaflet";
+import "leaflet/dist/leaflet.css";
 
 // prettier-ignore
 const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
@@ -132,7 +133,6 @@ class App {
             attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
         }).addTo(this.#map);
         L.popup({ closeOnClick: false, autoClose: false }).setLatLng(this.#currentCoords).setContent("Your current position").openOn(this.#map);
-
         // click map
         this.#map.on("click", e => {
             if (this.#mapMarker) this.#map.removeLayer(this.#mapMarker);

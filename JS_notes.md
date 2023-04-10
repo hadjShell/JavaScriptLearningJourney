@@ -960,7 +960,7 @@ Version: 1.0
 
 * Deep clone
 
-  * Use external libraries
+  * Use external libraries like `Lodash`
 
 
 ***
@@ -1855,3 +1855,56 @@ Version: 1.0
   * [`Geoloaction` API](https://www.w3schools.com/js/js_api_geolocation.asp)
   * [`Strorage` API](https://www.w3schools.com/js/js_api_web_storage.asp)
 * Server APIS (Third party APIs)
+
+***
+
+## Modules
+
+* Module
+
+  * Reusable piece of code that encapsulate implementation details
+
+  * Usually a standalone file, but it doesn't have to be
+
+  * ```markdown
+    import { ${} } from ${};		// Dependency
+    // module code
+    export { ${} };				   // Public API
+    ```
+
+* ES6 module
+
+  * Modules stored in files, exactly one module per file
+
+  * |                     | ES6 module               | Script                 |
+    | ------------------- | ------------------------ | ---------------------- |
+    | Top-level variables | Scoped to module         | Global                 |
+    | Default mode        | Strict mode              | "Sloppy" mode          |
+    | Top-level `this`    | `undefined`              | `window`               |
+    | Imports and exports | Yes                      | No                     |
+    | HTML                | `<script type="module">` | `<script>`             |
+    | File downloading    | Asynchronous             | Synchronous by default |
+
+  * Modules are imported synchronously
+  * This make bundling and dead code elimination possible
+  * Imports and exports are live connection, not copies
+  * Top-level `await` (ES2022)
+    * Only works in modules
+    * Use `await` without `async`
+    * Will block the execution on call stack, and importing and exporting
+    * Useful for calling `async` functions and consuming it instead of `func().then()`
+
+* CommonJS module
+
+  * The module system in `Node.js`
+
+* Development -> Modules -> Bundling -> Transpiling / Polyfilling -> Production
+
+* Build Process
+
+  * Bundling
+    * Join all modules into one file
+  * Polyfilling
+    * Convert modern JavaScript back to ES5
+    * Usually done by Babel
+  * Using tools like webpack or PARCEL
