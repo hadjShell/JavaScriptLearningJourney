@@ -1663,38 +1663,10 @@ Version: 1.0
         * If it is not a function, it is internally replaced with an *identity* function (`(x) => x`) which simply passes the fulfillment value forward
       * `onRejected(error)`
         *  Its return value becomes the fulfillment value of the promise returned by `catch()`
-        * The function is called with the following arguments `error`: The `erro` that the promise was rejected with
+        * The function is called with the following arguments `error`: The `error` object that the promise was rejected with
         * If it is not a function, it is internally replaced with a *thrower* function (`(x) => { throw x; }`) which throws the rejection reason it received
     * `Promise.prototype.catch()`
       * It is a shortcut for `Promise.prototype.then(undefined, onRejected)`
-
-  * Promises
-
-    * An **object** that is used as a placeholder for the future result of an asynchronous operation
-
-    * We no longer need to rely on events and callbacks passed into asynchronous functions to handle asynchronous results
-
-    * Instead of nesting callbacks, we can chain promises for a sequence of asynchronous operations
-
-    * A Promise is a JavaScript object that links producing code and consuming code
-
-    * Lifecycle
-      * Pending
-      
-      * Settled
-        * Asynchronous tasks are finished 
-        
-        * Fulfilled or Rejected
-        
-        * | myPromise.state | myPromise.result |
-          | :-------------- | :--------------- |
-          | "pending"       | `undefined`      |
-          | "fulfilled"     | a result value   |
-          | "rejected"      | an error object  |
-        
-      * Build promises
-      
-      * Consume promises
 
   * Example
 
@@ -1730,8 +1702,147 @@ Version: 1.0
     };
     ```
 
+### Promises
 
-  * a
+* An **object** that is used as a placeholder for the future result of an asynchronous operation
+
+* We no longer need to rely on events and callbacks passed into asynchronous functions to handle asynchronous results
+
+* Instead of nesting callbacks, we can chain promises for a sequence of asynchronous operations
+
+* A Promise is a JavaScript object that links producing code and consuming code
+
+* Lifecycle
+  * Build promises
+
+    * `Promise(function(resolve, reject) {})`
+
+    * `Promise.resolve(value)`
+
+      * Returns a `Promise` object that is fulfilled with a given `value`
+
+    * `Promise.reject(error)`
+
+      * Returns a `Promise` object that is rejected with a given `error`
+
+    * Promisify `Timer`
+
+      * So that we can chain all promises  (callbacks converted to promise)
+
+      ```javascript
+      // The para is the executor
+      const wait = (seconds) => new Promise(function(resolve) {
+          setTimeout(resolve, seconds * 1000);
+      });
+      wait(2).then(function() {console.log("I have waited for 2 seconds");});
+      ```
+
+  * Pending
+
+    * Execute the executor
+
+  * Settled
+    * Asynchronous tasks are finished 
+
+    * Fulfilled or Rejected
+
+    * | myPromise.state | myPromise.result |
+      | :-------------- | :--------------- |
+      | "pending"       | `undefined`      |
+      | "fulfilled"     | a result value   |
+      | "rejected"      | an error object  |
+
+  * Consume promises
+
+    * `then()`, `catch()`, `finally()`
+
+    * `async` and `await`
+
+      * *`async `and `await` make promises easier to write*
+        * No more `then`
+        * **Asynchronous operation written in synchronous way**
+      * The keyword `async` before a function makes the function return a **promise** (**always fulfilled not rejected**)
+      * The `await` keyword can only be used inside an `async` function
+      * The `await` keyword makes the function pause the execution and wait for a resolved promise before it continues
+      * Use with error handling `try...catch`
+        * Rethrow the `error` in `catch` block will manually reject `async` function
+
+      ```javascript
+      // Promisify geolocation
+      const getPosition = function () {
+        return new Promise(function (resolve, reject) {
+          navigator.geolocation.getCurrentPosition(resolve, reject);
+        });
+      };
+      
+      const whereAmI = async function () {
+        try {
+          // Geolocation
+          const pos = await getPosition();
+          const { latitude: lat, longitude: lng } = pos.coords;
+          // Reverse geocoding
+          const resGeo = await fetch(`https://geocode.xyz/${lat},${lng}?geoit=json`);
+          if (!resGeo.ok) throw new Error('Problem getting location data');
+          const dataGeo = await resGeo.json();
+          return `You are in ${dataGeo.city}, ${dataGeo.country}`;
+        } catch (err) {
+          // Reject promise returned from async function
+          throw err;
+        }
+      };
+      console.log('1: Will get location');
+      // const city = whereAmI();
+      // console.log(city);
+      // whereAmI()
+      //   .then(city => console.log(`2: ${city}`))
+      //   .catch(err => console.error(`2: ${err.message} 💥`))
+      //   .finally(() => console.log('3: Finished getting location'));
+      
+      // More async way
+      (async function () {
+        try {
+          const city = await whereAmI();
+          console.log(`2: ${city}`);
+        } catch (err) {
+          console.error(`2: ${err.message} 💥`);
+        }
+        console.log('3: Finished getting location');
+      })();
+      ```
+
+* `Promise.all()`
+
+  * Used for running Promises in parallel
+  * Takes an iterable of promises as input and returns a single `Promise`
+  * This returned promise fulfills when all of the input's promises **fulfill** (including when an empty iterable is passed), with an array of the fulfillment values
+  * It rejects when any of the input's promises rejects, with this first rejection reason
+
+* `Promise.race()`
+
+  * Takes an iterable of promises as input and returns a single `Promise`
+  * This returned promise settles with the eventual state of the first promise that settles
+  * Usually use with a timer
+
+* `Promise.allSettled()`
+
+  * Takes an iterable of promises as input and returns a single `Promise`
+  * This returned promise fulfills when all of the input's promises **settle** (including when an empty iterable is passed), with an array of objects that describe the outcome of each promise
+
+* `Promise.any()`
+
+  * Takes an iterable of promises as input and returns a single `Promise`
+  * This returned promise fulfills when any of the input's promises fulfills, with this first fulfillment value
+  * It rejects when all of the input's promises reject (including when an empty iterable is passed), with an [`AggregateError`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/AggregateError) containing an array of rejection reasons
+
+
+### The Event Loop
+
+* JavaScript only has one thread of execution
+* Web APIs environment (building / pending) -> Callback queue or Microtasks queue (settled) -> Call stack (consuming)
+  * Callback functions go into the callback queue
+  * Promises go into the microtasks queue
+    * Microtasks queue has priority over callback queue
+* Event loop check if call stack has no execution and then pick a callback function from the callback queue to the call stack
 
 ***
 
@@ -1739,6 +1850,7 @@ Version: 1.0
 
 * Browser APIs
   * All browsers have a set of built-in Web APIs to support complex operations, and to help accessing data
+  * DOM
   * `Fetch` API
   * [`Geoloaction` API](https://www.w3schools.com/js/js_api_geolocation.asp)
   * [`Strorage` API](https://www.w3schools.com/js/js_api_web_storage.asp)

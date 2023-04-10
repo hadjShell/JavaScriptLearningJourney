@@ -426,17 +426,58 @@ console.log(dogsCopy); */
 // tesla.chargeBattery(90);
 // tesla.acc();
 
-// Challenge 21
-function whereAmI(lat, lng) {
-    fetch(`https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${lat}&longitude=${lng}&localityLanguage=en`)
-        .then(response => {
-            if (!response.ok) throw new Error(`Something went wrong! ${response.state}`);
-            return response.json();
-        })
-        .then(data => console.log(`You are in ${data.city}, ${data.countryName}`))
-        .catch(err => console.error(`${err}`));
-}
+// // Challenge 21
+// function whereAmI(lat, lng) {
+//     fetch(`https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${lat}&longitude=${lng}&localityLanguage=en`)
+//         .then(response => {
+//             if (!response.ok) throw new Error(`Something went wrong! ${response.state}`);
+//             return response.json();
+//         })
+//         .then(data => console.log(`You are in ${data.city}, ${data.countryName}`))
+//         .catch(err => console.error(`${err}`));
+// }
 
-whereAmI(52.508, 13.381);
-whereAmI(19.037, 72.873);
-whereAmI(-33.933, 18.474);
+// whereAmI(52.508, 13.381);
+// whereAmI(19.037, 72.873);
+// whereAmI(-33.933, 18.474);
+
+// Promisify geolocation
+const getPosition = function () {
+    return new Promise(function (resolve, reject) {
+        navigator.geolocation.getCurrentPosition(resolve, reject);
+    });
+};
+
+const whereAmI = async function () {
+    try {
+        // Geolocation
+        const pos = await getPosition();
+        const { latitude: lat, longitude: lng } = pos.coords;
+        // Reverse geocoding
+        const resGeo = await fetch(`https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${lat}&longitude=${lng}&localityLanguage=en`);
+        if (!resGeo.ok) throw new Error('Problem getting location data');
+        const dataGeo = await resGeo.json();
+        return `You are in ${dataGeo.city}, ${dataGeo.countryName}`;
+    } catch (err) {
+        // Reject promise returned from async function
+        throw err;
+    }
+};
+console.log('1: Will get location');
+// const city = whereAmI();
+// console.log(city);
+// whereAmI()
+//   .then(city => console.log(`2: ${city}`))
+//   .catch(err => console.error(`2: ${err.message} 💥`))
+//   .finally(() => console.log('3: Finished getting location'));
+
+// More async way
+(async function () {
+    try {
+        const city = await whereAmI();
+        console.log(`2: ${city}`);
+    } catch (err) {
+        console.error(`2: ${err.message} 💥`);
+    }
+    console.log('3: Finished getting location');
+})();
