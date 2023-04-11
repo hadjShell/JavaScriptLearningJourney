@@ -1664,7 +1664,7 @@ Version: 1.0
 
 * Call back hell
 
-  * The problem of nested callback functions for executing asynchronous operations in order
+  * The problem of nested callback functions for executing asynchronous operations **in order**
 
 * Modern way
 
@@ -1685,9 +1685,13 @@ Version: 1.0
         * If it is not a function, it is internally replaced with a *thrower* function (`(x) => { throw x; }`) which throws the rejection reason it received
     * `Promise.prototype.catch()`
       * It is a shortcut for `Promise.prototype.then(undefined, reject)`
-
+    * `Promise.prototype.finally(final)`
+    * Promise is consumed and new promise is built and settled during `then()`, therefore asynchronous operations are executed in order
+    * Actually it is still nested, but it is coded in a non-nested way
+    * `then()` is actually a new promisification (build -> callback -> settled)
+  
   * Example
-
+  
     ```javascript
     const getJSON = function (url, errorMsg = 'Something went wrong') {
       return fetch(url).then(response => {
@@ -1743,9 +1747,9 @@ Version: 1.0
 
       * Returns a `Promise` object that is rejected with a given `error`
 
-    * Promisify `Timer`
+    * Promisify callback functions
 
-      * So that we can chain all promises  (callbacks converted to promise)
+      * So that we can chain all promises  (**callbacks converted to promise workflow**)
 
       ```javascript
       // The para is the executor
@@ -1757,7 +1761,7 @@ Version: 1.0
 
   * Pending
 
-    * Execute the executor
+    * Execute the executor (equivalent to callback execution)
 
   * Settled
     * Asynchronous tasks are finished 
@@ -1780,11 +1784,12 @@ Version: 1.0
         * No more `then`
         * **Asynchronous operation written in synchronous way**
       * The keyword `async` before a function makes the function return a **promise** (**always fulfilled not rejected**)
+      * All functions invoked in `async` functions should be `async` not callback functions
       * The `await` keyword can only be used inside an `async` function
       * The `await` keyword makes the function pause the execution and wait for a resolved promise before it continues
       * Use with error handling `try...catch`
         * Rethrow the `error` in `catch` block will manually reject `async` function
-
+      
       ```javascript
       // Promisify geolocation
       const getPosition = function () {
@@ -1827,7 +1832,7 @@ Version: 1.0
         console.log('3: Finished getting location');
       })();
       ```
-
+  
 * `Promise.all()`
 
   * Used for running Promises in parallel
