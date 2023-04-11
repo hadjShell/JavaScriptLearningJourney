@@ -345,6 +345,8 @@ Version: 1.0
 
 * Default parameters
 
+  * Use default parameters whenever is possible
+
   ```javascript
   function createBooking(
   	flightNum, 
@@ -407,6 +409,13 @@ Version: 1.0
 * Chaining methods
 
   * Avoid chaining the methods that mutate the original object
+
+* Functional programming
+
+  * Declarative paradigm
+  * Based on the idea of writing software by combining many pure functions, avoiding side effects and mutating data
+  * Pure functions are stateless
+
 
 ***
 
@@ -723,8 +732,13 @@ Version: 1.0
 
     * Return an array of object property key-value pairs
 
-  * Destructing objects
+  * `Object.freeze(obj)`
 
+    * Make the object immutable
+    * However, it's a shallow freeze
+  
+  * Destructing objects
+  
     ```javascript
     const restaurant = {
         name: "YO",
@@ -753,18 +767,18 @@ Version: 1.0
     // switch
     ({a, b} = {b, a});			// () is required
     ```
-
+  
   * Spread
-
+  
     ```javascript
     const newRestaurant = {
         ...restaurant,
         founder: "John"
     };
     ```
-
+  
   * Rest
-
+  
     ```javascript
     const {fri, ...otherDays} = openHours;
     ```
@@ -1886,8 +1900,18 @@ Version: 1.0
     | File downloading    | Asynchronous             | Synchronous by default |
 
   * Modules are imported synchronously
+
   * This make bundling and dead code elimination possible
+
   * Imports and exports are live connection, not copies
+
+  * Two types of export
+
+    * Named export
+      * In-line
+      * All at bottom
+    * Default export
+
   * Top-level `await` (ES2022)
     * Only works in modules
     * Use `await` without `async`
@@ -1907,4 +1931,6 @@ Version: 1.0
   * Polyfilling
     * Convert modern JavaScript back to ES5
     * Usually done by Babel
+    * `import "core-js/stable"`
+    * `import "regenerator-runtime/runtime"`
   * Using tools like webpack or PARCEL
