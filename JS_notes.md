@@ -66,7 +66,7 @@ Version: 1.0
   * Forbid to do certain things
   * Create visible errors
 * Script Loading
-  * ![script_loading](img\script_loading.png)
+  * ![script_loading](img/script_loading.png)
   * Async in head
     * Scripts not guaranteed to execute in order
     * Use for 3rd-party scripts where order doesn't matter
@@ -74,8 +74,6 @@ Version: 1.0
   * Defer in head
     * Scripts are executed in order
     * Overall best solution
-
-
 
 ***
 
@@ -225,11 +223,12 @@ Version: 1.0
 * Ternary operator
 * Operator precedence
 * Modern operators
-  * `...` works on iterables not objects
+  * Spread operator `...`
+    * `...` works on iterables not objects
     * After ES2018, `...` works on objects too
   * Nullish coalescing operator `??`
     * Introduced in ES2020
-    * Updated OR
+    * Returns its right-hand side operand when its left-hand side operand is `null` or `undefined`, and otherwise returns its left-hand side operand
     * Work with nullish value: `null` and `undeifined` without `0`
   * Logical assignment operator
     * Introduced in ES2021
@@ -242,6 +241,8 @@ Version: 1.0
 ***
 
 ## Expressions and Statements
+
+***
 
 ## Flow control
 
@@ -293,7 +294,7 @@ Version: 1.0
   * *Return functions from functions*
   * *Call methods on functions*
 
-* Higher-order funtions
+* Higher-order functions
 
   * A function that receives another function as an argument, that returns a new function, or both
   * The function as an argument is called callback function
@@ -341,7 +342,6 @@ Version: 1.0
 
   * Helpful for one-line functions
   * Does **not** get its own `this` keyword
-  * Does **not** have `arguments` keyword
 
 * Default parameters
 
@@ -358,25 +358,36 @@ Version: 1.0
   createBooking("LH123", undefined, 1000);		// skip a parameter to use its default value
   ```
 
+* Immediately invoked function expression
+
+  * Called once and never be called again
+
+    ```javascript
+    (function() {})();
+    (() => {})();
+    ```
+
 * Functions in JavaScript is passed-by-value
 
-* `arguments` key word
+* `arguments` 
 
-  * An `Array`-like object accessible inside function that contains the values of the arguments passed to that function
+  * An Array-like object accessible inside function that contains the values of the arguments passed to that function
 
 * `this`
 
   * Depends on how the function is called, which means it is **dynamic**
 
-  * In method, `this` points to the owner of the function
+  * Alone, `this` refers to the **global object**
 
-  * In regular function, `this` points to `undefined` (in strict mode; otherwise points to `window`)
+  * In method, `this` refers to the **object**
 
-    > For example, `this` in the callback functions
+  * In regular function, `this` refers to **`undefined`** (in strict mode; otherwise refers to `window`)
 
-  * In arrow function, `this` will be the `this` of the parent function
+    > When a function is used as a **callback function**, `this` is lost
 
-  * ***In an event handler function, `this` always points to the element on which that handler is attached to***
+  * In arrow function, do **NOT** get its own `this`
+
+  * In an event handler function (*not defined as arrow function*), `this` always refers to the **element** on which that handler is attached to
 
   * Manually tell how it should behave
     * `func.call(thisArg, args)`
@@ -391,15 +402,6 @@ Version: 1.0
       *  Creates a new function that, when called, has its `this` keyword set to the provided value, with a given sequence of arguments preceding any provided when the new function is called
       * If pass `args`, it will be preset when the `func` is called --- Partial application
       * Pass `null` to `thisArg` if you want to create a partial application without having `this` inside
-
-* Immediately invoked function expression
-
-  * Called once and never be called again
-
-    ```javascript
-    (function() {})();
-    (() => {})();
-    ```
 
 * Closures
 
@@ -445,8 +447,9 @@ Version: 1.0
 * Basic operations
 
   * `array.length`
+    
     * Return the length of the array
-  
+    
   * `push`
     * Add new element to the end of the array
     * Return the length of the new array
@@ -546,6 +549,8 @@ Version: 1.0
   
   * `join`
   
+    * Returns a new string by concatenating all of the elements in an array, separated by commas or a specified separator string
+  
   * `at`
   
     * Takes an integer value and returns the item at that index
@@ -574,7 +579,7 @@ Version: 1.0
   
   * `reduce(callbackFn, initialValue)`
   
-  * `reduce(function(accumulator, cuurentValue, currentIndex, array) {}, initiaValue)`
+  * `reduce(function(accumulator, currentValue, currentIndex, array) {}, initiaValue)`
   
     * Executes a user-supplied "reducer" callback function on each element of the array, in order, passing in the return value from the calculation on the preceding element. The final result of running the reducer across all elements of the array is a **single value**
     * `accumulator`: the value resulting from the previous call to `callbackFn`
@@ -664,7 +669,7 @@ Version: 1.0
         const arr = Array.from({ length: 7 }, () => 1);
         ```
   
-  * ![array_method](img\array_method.png)
+  * ![array_method](img/array_method.png)
 
 ### Objects
 
@@ -939,11 +944,6 @@ Version: 1.0
 
     * Takes a pattern and divides a string into an ordered list of substrings by searching for the pattern, puts these substrings into an array, and returns the array
 
-  * `join(separator)`
-
-    * Returns a new string by concatenating all of the elements in an ***array***, separated by commas or a specified separator string
-    * If the array has only one item, then that item will be returned without using the separator
-
   * `padStart(targetLength, padString)`
 
     * Pads the current string with another string (multiple times, if needed) until the resulting string reaches the given length
@@ -952,8 +952,8 @@ Version: 1.0
   * `padEnd`
 
   * `repeat(count)`
-
-    * Returns a new string which contains the specified number of copies of the string on which it was called, concatenated together
+  
+  * Returns a new string which contains the specified number of copies of the string on which it was called, concatenated together
 
 ### Copy
 
@@ -988,7 +988,7 @@ Version: 1.0
 * Allows JavaScript to access HTML elements and styles to manipulate them
 * DOM is automatically created by the browser as soon as the HTML page loads
 * A **tree** structure
-* ![DOM](img\DOM.png)
+* ![DOM](img/DOM.png)
 * DOM is a Web API that written in JavaScript
 * **DOM objects are unique**
 * *Every single node in the DOM tree is the type **`Node`***
@@ -1008,7 +1008,7 @@ Version: 1.0
   * `Node` inherits `EventTarget` which has two methods
     * `addEventListener()`
     * `removeEventListener()`
-  * ![node](img\node.png)
+  * ![node](img/node.png)
 * DOM traversal
   * `Element.children`
     * Returns a live `HTMLCollection` which contains all of the child `elements` of the element upon which it was called
@@ -1120,20 +1120,19 @@ Version: 1.0
   * `Node.textContent`
     * Represents the text content of the node and its descendants
     * Setting `textContent` on a node removes *all* of the node's children and replaces them with a single text node with the given string value
-
   * `Element.innerHTML`
     * Gets or sets the HTML or XML markup contained within the element
-
   * `HTMLInputElement.value`
     * Returns a String
-
+  * `HTMLElement.focus()`
+    * Sets focus on the specified element, if it can be focused. The focused element is the element that will receive keyboard and similar events by default
+  * `HTMLElement.blur()`
+    * Removes keyboard focus from the current element
   * `HTMLElement.style.${property} = ""`
     * Returns the *inline* style of an element in the form of a `CSSStyleDeclaration` object
     * Will not change the CSS file; add an inline style attribute
-
   * `window.getComputedStyle(element)`
     * Returns an object containing the values of all CSS properties of an element, after applying active stylesheets and resolving any basic computation those values may contain
-
   * `Element.classList`
     * Returns a **live** [`DOMTokenList`](https://developer.mozilla.org/en-US/docs/Web/API/DOMTokenList) collection of the `class` attributes of the element
     * `contains()`
@@ -1143,13 +1142,10 @@ Version: 1.0
       * Add if not contains, remove if contains
 
     * Add and remove classes is the main way to manipulate the styles instead of manipulating `style` directly
-
   * `ELement.src`
     * Absolute url
-
   * `Element.getAttribute("src")`
     * Relative url
-
   * `Element.dataset.${}`
     * Data attributes
 
@@ -1183,7 +1179,7 @@ Version: 1.0
 
   * An event is something happened on the page
   * **JavaScript will generate an object which contains all the information about the event when an event occurs**
-  * The callback function accepts a single parameter: an object based on [`Event`](https://developer.mozilla.org/en-US/docs/Web/API/Event) describing the event that has occurred, and it returns nothing
+  * Event handler: the callback function accepts a single parameter: an object based on [`Event`](https://developer.mozilla.org/en-US/docs/Web/API/Event) describing the event that has occurred, and it returns nothing
   * **In an event handler function *(except arrow function)*, `this` always points to the element on which that handler is attached to**
 
   ```javascript
@@ -1229,15 +1225,23 @@ Version: 1.0
       * `addEventListener(event, callbackFn, true)` will listen to event in capture phase
     * Not all events have these phases
     * Stop propagation: `e.stopPropagation()`
-    * **Event delegation**
-      * Take advantage of event propagation that add one event listener to the container of similar events instead of add same event listeners to all of them
-      * Use `e.target`
-      * Matching strategy
-      * Guard clause (Guard `null` pointer)
+* **Event delegation**
+  * Take advantage of event propagation that add one event listener to the container of similar events instead of add same event listeners to all of them
+  * Use `e.target`
+  * Matching strategy
+  * Guard clause (Guard `null` pointer)
+
+### BOM
+
+* The `window` object is supported by all browsers. It represents the browser's window
+* All global JavaScript objects, functions, and variables automatically become members of the window object
+* Global variables are properties of the window object
+* Global functions are methods of the window object
+* Even the document object (of the HTML DOM) is a property of the window object
 
 ***
 
-## Numbers, Dates, Intl and Timers
+## Number, Math, Date, Intl and Timers
 
 * Numbers
 
@@ -1301,10 +1305,10 @@ Version: 1.0
 
     * Always rounds down and returns the largest integer less than or equal to a given number
 
-    * Create a random integer within `(min, max]`
+    * Create a random integer within `[min, max]`
 
       ```javascript
-      const randomInt = (min, max) => Math.trunc(Math.random() * (max - min) + 1) + min;
+      const randomInt = (min, max) => Math.floor(Math.random() * (max - min) + 1) + min;
       ```
 
 * Numeric separators
@@ -1445,7 +1449,7 @@ Version: 1.0
 
 * Prototype chain
 
-  ![prototype_chain](img\prototype_chain.png)
+  ![prototype_chain](img/prototype_chain.png)
 
 * Static methods
 
@@ -1484,18 +1488,18 @@ Version: 1.0
           this.birthYear = birthYear;
       }
       // getter
-      get age() {
-          return 2023 - this.birthYear;
+      get birth() {
+          return this.birthYear;
       }
       // setter
-      set age(age) {
-          this.birthYear = 2023 - age;
+      set birth(birth) {
+          this.birthYear = birth;
       }
   }
   
   const sam = new Person(2000);
-  console.log(sam.age);		// not sam.age()
-  sam.age = 30;			   // will change the birthYear
+  console.log(sam.birth);		// not sam.birth()
+  sam.birth = 30;			   // will change the birthYear
   ```
 
 ### `Object.create`
@@ -1507,7 +1511,7 @@ Version: 1.0
   const obj = Object.create(ClassName);
   ```
 
-* ==Be aware of the difference==: NOT "fake class"
+* Be aware of the difference: **NOT** "fake class"
 
 ### Inheritance
 
@@ -1669,18 +1673,18 @@ Version: 1.0
     * `fetch(url)`
       * Starts the process of fetching a resource from the network, returning a **promise** which is fulfilled once the response is available
       * Only rejects **when a network error is encountered**
-    * `Promise.prototype.then(onFulfilled, onRejected)`
+    * `Promise.prototype.then(resolve, reject)`
       * It immediately returns an equivalent `Promise` object, allowing you to chain calls to other promise methods
-      * `onFulfilled(value)`
+      * `resolve(value)`
         * Its return value becomes the fulfillment value of the promise returned by `then()`
         * The function is called with the following arguments `value`: The value that the promise was fulfilled with
         * If it is not a function, it is internally replaced with an *identity* function (`(x) => x`) which simply passes the fulfillment value forward
-      * `onRejected(error)`
+      * `reject(error)`
         *  Its return value becomes the fulfillment value of the promise returned by `catch()`
         * The function is called with the following arguments `error`: The `error` object that the promise was rejected with
         * If it is not a function, it is internally replaced with a *thrower* function (`(x) => { throw x; }`) which throws the rejection reason it received
     * `Promise.prototype.catch()`
-      * It is a shortcut for `Promise.prototype.then(undefined, onRejected)`
+      * It is a shortcut for `Promise.prototype.then(undefined, reject)`
 
   * Example
 
