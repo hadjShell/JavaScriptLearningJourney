@@ -1943,3 +1943,28 @@ Version: 1.0
     * `import "core-js/stable"`
     * `import "regenerator-runtime/runtime"`
   * Using tools like webpack or PARCEL
+
+***
+
+## Software architecture
+
+* Web application components
+  * State and database
+  * Business Logic
+    * Code that solves the actual business problem
+  * HTTP libaray
+    * For AJAX
+    * Optional but almost always necessary in real-world apps
+  * Application logic (Router)
+    * Code that is only concerned about the implementation of application itself
+    * Handles navigation and UI events
+  * Presentation logic (UI layer)
+    * Code that is concerned about the visible part of the application
+    * Essentially displays application state
+
+### MVC
+
+* Model-View-Controller architecture
+* ![MVC](img/MVC.png)
+
+* [Look at this article for future read](https://www.freecodecamp.org/news/an-introduction-to-software-architecture-patterns/)
