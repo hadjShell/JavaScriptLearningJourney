@@ -31,22 +31,5 @@ export default class Recipe {
     get ingredients() { return this.#ingredients; }
     get isGeneratedByUser() { return this.#isGeneratedByUser; }
 
-    increaseQuantity() {
-        this.#ingredients.forEach(ingredient => {
-            if (isFinite(ingredient.quantity))
-                // TODO: fraction
-                ingredient.quantity *= (this.#servings + 1) / this.#servings;
-        })
-        return this;
-    }
-    decreaseQuantity() {
-        if (this.#servings === 1) return;
-
-        this.#ingredients.forEach(ingredient => {
-            if (isFinite(ingredient.quantity))
-                // TODO: fraction
-                ingredient.quantity *= (this.#servings - 1) / this.#servings;
-        })
-        return this;
-    }
+    set servings(ser) { return this.#servings = ser; }
 }

@@ -558,8 +558,7 @@ function hmrAccept(bundle, id) {
 
 },{}],"aenu9":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
-var _esRegexpFlagsJs = require("core-js/modules/es.regexp.flags.js"); //window.addEventListener("load", );          show recipe by id
- // const id = window.location.hash.slice(1)
+var _esRegexpFlagsJs = require("core-js/modules/es.regexp.flags.js");
 var _webImmediateJs = require("core-js/modules/web.immediate.js");
 var _runtime = require("regenerator-runtime/runtime");
 var _app = require("./app");
@@ -568,34 +567,80 @@ var _resultsView = require("./view/resultsView");
 var _resultsViewDefault = parcelHelpers.interopDefault(_resultsView);
 var _recipeViewJs = require("./view/recipeView.js");
 var _recipeViewJsDefault = parcelHelpers.interopDefault(_recipeViewJs);
+var _searchView = require("./view/searchView");
+var _searchViewDefault = parcelHelpers.interopDefault(_searchView);
+var _paginationView = require("./view/paginationView");
+var _paginationViewDefault = parcelHelpers.interopDefault(_paginationView);
+if (module.hot) module.hot.accept();
 ///////////////////////////////////////
-async function controlResults() {
+async function controlSearch() {
+    try {
+        // 1. Get query
+        const key = (0, _searchViewDefault.default).getQuery();
+        if (!key) return;
+        // 2. Load and render results
+        await controlResults(key, 1);
+        // 3. Render pagination
+        (0, _paginationViewDefault.default).render((0, _appDefault.default).hasPrevious, (0, _appDefault.default).hasNext, (0, _appDefault.default).currentSearchPage);
+    } catch (err) {
+        console.error(err);
+    //resultsView.renderError();
+    }
+}
+async function controlResults(key, pageNum) {
     try {
         (0, _resultsViewDefault.default).renderSpinner();
-        const results = await (0, _appDefault.default).searchRecipe("pizza");
+        await (0, _appDefault.default).searchRecipe(key);
+        const results = await (0, _appDefault.default).recipesOnPage(pageNum);
         (0, _resultsViewDefault.default).render(results);
     } catch (err) {
         throw err;
     }
 }
-function controlRecipe() {
-    return new Promise((resolve)=>{
-        console.log((0, _appDefault.default).currentRecipe); // BUG: no ingredients and url for now
-        (0, _recipeViewJsDefault.default).renderSpinner();
-        (0, _recipeViewJsDefault.default).render((0, _appDefault.default).currentRecipe);
-        resolve();
-    });
-}
-(async function() {
+async function controlRecipe() {
     try {
-        await controlResults();
-        await controlRecipe();
+        // 1. Get recipe id
+        const id = window.location.hash.slice(1);
+        if (!id) return;
+        // 2. Render spinner
+        (0, _recipeViewJsDefault.default).renderSpinner();
+        // 3. Load recipe data and render it
+        await (0, _appDefault.default).setCurrentRecipe(id);
+        (0, _recipeViewJsDefault.default).render((0, _appDefault.default).currentRecipe);
     } catch (err) {
-        alert(err);
+        console.error(err);
+    //recipeView.renderError();
     }
-})();
+}
+// @direction: can only be "prev" or "next"
+async function controlPage(direction) {
+    try {
+        // 1. Pass change to the app
+        (0, _appDefault.default).pagination(direction);
+        // 2. Render new results and new pagination
+        const results = await (0, _appDefault.default).recipesOnPage((0, _appDefault.default).currentSearchPage);
+        (0, _resultsViewDefault.default).render(results);
+        (0, _paginationViewDefault.default).render((0, _appDefault.default).hasPrevious, (0, _appDefault.default).hasNext, (0, _appDefault.default).currentSearchPage);
+    } catch (err) {
+        console.error(err);
+    //return;
+    }
+}
+function controlServings(goUp) {
+    // 1. Get goup or godown
+    // 2. Calculate new ingredient.quantity
+    if ((0, _appDefault.default).updateServings(goUp)) // 3. Render recipe
+    (0, _recipeViewJsDefault.default).update((0, _appDefault.default).currentRecipe);
+}
+function init() {
+    (0, _recipeViewJsDefault.default).addHandler(controlRecipe);
+    (0, _recipeViewJsDefault.default).addServingsHandler(controlServings);
+    (0, _searchViewDefault.default).addHandler(controlSearch);
+    (0, _paginationViewDefault.default).addHandler(controlPage);
+}
+init();
 
-},{"@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3","./app":"8lRBv","core-js/modules/es.regexp.flags.js":"gSXXb","core-js/modules/web.immediate.js":"49tUX","regenerator-runtime/runtime":"dXNgZ","./view/recipeView.js":"7Olh7","./view/resultsView":"46Nfk"}],"gkKU3":[function(require,module,exports) {
+},{"@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3","./app":"8lRBv","core-js/modules/es.regexp.flags.js":"gSXXb","core-js/modules/web.immediate.js":"49tUX","regenerator-runtime/runtime":"dXNgZ","./view/recipeView.js":"7Olh7","./view/resultsView":"46Nfk","./view/searchView":"blwqv","./view/paginationView":"9Reww"}],"gkKU3":[function(require,module,exports) {
 exports.interopDefault = function(a) {
     return a && a.__esModule ? a : {
         default: a
@@ -636,7 +681,9 @@ class App {
     #bookmarks = new Set([]);
     #recipes = [];
     #currentRecipe = null;
-    #currentSearchPage = null;
+    #currentSearchPage = 0;
+    #hasPrevious = false;
+    #hasNext = false;
     constructor(){}
     get bookmarks() {
         return this.#bookmarks;
@@ -654,36 +701,35 @@ class App {
             cookingTime
         };
     }
+    get hasPrevious() {
+        return this.#hasPrevious;
+    }
+    get hasNext() {
+        return this.#hasNext;
+    }
+    get currentSearchPage() {
+        return this.#currentSearchPage;
+    }
+    async setCurrentRecipe(id) {
+        this.#currentRecipe = await this._findRecipeById(id);
+    }
     async searchRecipe(str = "") {
         try {
+            // Reset the recipes array first whenever a search occurs 
+            this.#recipes = [];
             const url = `${(0, _config.PATH_FORKIFY)}?search=${str}&key=${(0, _config.KEY_FORKIFY)}`;
-            // Fetch data from api,
-            // if request time is too long, throw error
-            const response = await Promise.race([
-                fetch(url),
-                (0, _helper.timeout)((0, _config.TIMEOUT_SEC))
-            ]);
-            const data = await response.json();
-            if (!response.ok) throw new Error(`${data.message} (${response.status})`);
-            const dataRecipes = data.data.recipes;
-            const dataIds = await this._getAllRecipesIds(dataRecipes);
+            // Fetch data
+            const data = await (0, _helper.AJAX)(url);
+            const dataRecipes = data.recipes;
             // Initialise app's states
-            // Fetch detailed data based on recipe ids,
-            // if request time is too long, throw error
-            await Promise.race([
-                this._mapDataToRecipe(dataIds),
-                (0, _helper.timeout)((0, _config.TIMEOUT_SEC))
-            ]);
-            console.log(this.#recipes);
-            // OK
+            await this._mapDataToRecipes(dataRecipes);
             this.#currentSearchPage = 1;
-            this.#currentRecipe = this.#recipes[0]; // TODO: fake logic, delete later
-            const recipesOnCurrentPage = await this.recipesOnPage(this.#currentSearchPage);
-            return recipesOnCurrentPage;
+            this._hasPreviousOrNext();
         } catch (err) {
             throw err;
         }
     }
+    // Generate output data from the recipe objects on current page
     recipesOnPage(pageNum) {
         return new Promise((resolve)=>{
             resolve(this.#recipes.filter((_, i)=>i < pageNum * (0, _config.MAX_RECIPES_ON_SEARCH_PAGE) && i >= (pageNum - 1) * (0, _config.MAX_RECIPES_ON_SEARCH_PAGE)).map((recipe)=>{
@@ -697,8 +743,10 @@ class App {
             }));
         });
     }
-    async pageUp() {}
-    async pageDown() {}
+    pagination(direction) {
+        direction === "prev" ? this.#currentSearchPage-- : this.#currentSearchPage++;
+        this._hasPreviousOrNext();
+    }
     addRecipe(recipeInfo) {
         // Validation
         // Create recipe
@@ -706,9 +754,14 @@ class App {
         newRecipe.isGeneratedByUser = true;
     // Add to recioes array
     }
-    changeServings(id, option) {
-        const recipe = this._findRecipeById(id);
-        return option === "increase" ? recipe.increaseQuantity() : recipe.decreaseQuantity();
+    updateServings(goUp) {
+        // check servings
+        if (!goUp && this.#currentRecipe.servings === 1) return false;
+        this.#currentRecipe.ingredients.forEach((ingredient)=>{
+            if (isFinite(ingredient.quantity)) ingredient.quantity *= goUp ? (this.#currentRecipe.servings + 1) / this.#currentRecipe.servings : (this.#currentRecipe.servings - 1) / this.#currentRecipe.servings;
+        });
+        goUp ? this.#currentRecipe.servings++ : this.#currentRecipe.servings--;
+        return true;
     }
     // Methods related to bookmark
     bookmarkRecipe(id) {
@@ -721,29 +774,21 @@ class App {
         return this._findRecipeById(id);
     }
     // Helpers
-    _findRecipeById(id) {
-        return this.#recipes.find((recipe)=>recipe.id === id);
+    // Get detailed recipe by id
+    async _findRecipeById(id) {
+        const url = `${(0, _config.PATH_FORKIFY)}/${id}?key=${(0, _config.KEY_FORKIFY)}`;
+        const data = await (0, _helper.AJAX)(url);
+        return new (0, _recipeDefault.default)(data.recipe);
     }
-    // Get all searched recipes id in an array
-    _getAllRecipesIds(dataRecipes) {
+    _mapDataToRecipes(dataRecipes) {
         return new Promise((resolve)=>{
-            resolve(dataRecipes.map((recipe)=>recipe.id));
+            dataRecipes.forEach((dataRecipe)=>this.#recipes.push(new (0, _recipeDefault.default)(dataRecipe)));
+            resolve();
         });
     }
-    // Map object data fetched from api to real Recipe objetcs
-    _mapDataToRecipe(dataIds) {
-        return Promise.resolve(dataIds.forEach((id)=>{
-            // Fetch data from api
-            fetch(`${(0, _config.PATH_FORKIFY)}/${id}?key=${(0, _config.KEY_FORKIFY)}`).then((response)=>{
-                const data = response.json();
-                if (!response.ok) throw new Error(`${data.message} (${response.status})`);
-                return data;
-            }).then((data)=>{
-                this.#recipes.push(new (0, _recipeDefault.default)(data.data.recipe));
-            }).catch((err)=>{
-                throw err;
-            });
-        }));
+    _hasPreviousOrNext() {
+        this.#hasPrevious = this.#currentSearchPage > 1;
+        this.#hasNext = this.#currentSearchPage * (0, _config.MAX_RECIPES_ON_SEARCH_PAGE) < this.#recipes.length;
     }
 }
 const app = new App();
@@ -800,20 +845,8 @@ class Recipe {
     get isGeneratedByUser() {
         return this.#isGeneratedByUser;
     }
-    increaseQuantity() {
-        this.#ingredients.forEach((ingredient)=>{
-            if (isFinite(ingredient.quantity)) // TODO: fraction
-            ingredient.quantity *= (this.#servings + 1) / this.#servings;
-        });
-        return this;
-    }
-    decreaseQuantity() {
-        if (this.#servings === 1) return;
-        this.#ingredients.forEach((ingredient)=>{
-            if (isFinite(ingredient.quantity)) // TODO: fraction
-            ingredient.quantity *= (this.#servings - 1) / this.#servings;
-        });
-        return this;
+    set servings(ser) {
+        return this.#servings = ser;
     }
 }
 exports.default = Recipe;
@@ -822,15 +855,26 @@ exports.default = Recipe;
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 parcelHelpers.export(exports, "timeout", ()=>timeout);
-const timeout = function(s) {
+parcelHelpers.export(exports, "AJAX", ()=>AJAX);
+var _config = require("./config");
+function timeout(s) {
     return new Promise(function(_, reject) {
         setTimeout(function() {
             reject(new Error(`Request took too long! Timeout after ${s} second`));
         }, s * 1000);
     });
-};
+}
+async function AJAX(url = "") {
+    const response = await Promise.race([
+        fetch(url),
+        timeout((0, _config.TIMEOUT_SEC))
+    ]);
+    const data = await response.json();
+    if (!response.ok) throw new Error(`${data.message} (${response.status})`);
+    return data.data;
+}
 
-},{"@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"k5Hzs":[function(require,module,exports) {
+},{"@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3","./config":"k5Hzs"}],"k5Hzs":[function(require,module,exports) {
 // Global variables
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
@@ -838,7 +882,7 @@ parcelHelpers.export(exports, "KEY_FORKIFY", ()=>KEY_FORKIFY);
 parcelHelpers.export(exports, "PATH_FORKIFY", ()=>PATH_FORKIFY);
 parcelHelpers.export(exports, "MAX_RECIPES_ON_SEARCH_PAGE", ()=>MAX_RECIPES_ON_SEARCH_PAGE);
 parcelHelpers.export(exports, "TIMEOUT_SEC", ()=>TIMEOUT_SEC);
-const KEY_FORKIFY = "f76abc34-9cf2-4870-bc7f-c4ed847cf88e";
+const KEY_FORKIFY = "9b310d41-3f64-4015-a0f0-f33097042e2c";
 const PATH_FORKIFY = "https://forkify-api.herokuapp.com/api/v2/recipes";
 const MAX_RECIPES_ON_SEARCH_PAGE = 10;
 const TIMEOUT_SEC = 10;
@@ -2830,13 +2874,33 @@ var _iconsSvg = require("url:../../img/icons.svg");
 var _iconsSvgDefault = parcelHelpers.interopDefault(_iconsSvg);
 class RecipeView extends (0, _viewDefault.default) {
     _parentElement = document.querySelector(".recipe");
+    _errorMessage = "We couldn't find that recipe. \nPlease try another one :)";
     render(recipe) {
         this._clear();
-        this._parentElement.append(this._createElementRecipe(recipe));
+        this._parentElement.insertAdjacentHTML("afterbegin", this._createHTMLRecipe(recipe));
     }
-    _createElementRecipe(recipe) {
-        const item = document.createElement("div");
-        item.innerHTML = `<figure class="recipe__fig">
+    update(recipe) {
+        super.update(this._createHTMLRecipe(recipe));
+    }
+    addHandler(handler) {
+        [
+            "hashchange",
+            "load"
+        ].forEach((e)=>window.addEventListener(e, handler));
+    }
+    addServingsHandler(handler) {
+        this._parentElement.addEventListener("click", (e)=>{
+            const clicked = e.target.closest(".btn--increase-servings");
+            if (!clicked) return;
+            const goUp = clicked.dataset.goup === "true";
+            handler(goUp);
+        });
+    }
+    renderError() {
+        super.renderError(this._errorMessage);
+    }
+    _createHTMLRecipe(recipe) {
+        return `<figure class="recipe__fig">
       <img src="${recipe.imageUrl}" alt="${recipe.title}" class="recipe__img" />
       <h1 class="recipe__title">
         <span>${recipe.title}</span>
@@ -2859,12 +2923,12 @@ class RecipeView extends (0, _viewDefault.default) {
         <span class="recipe__info-text">servings</span>
 
         <div class="recipe__info-buttons">
-          <button class="btn--tiny btn--increase-servings">
+          <button class="btn--tiny btn--increase-servings" data-goup="false">
             <svg>
               <use href="${0, _iconsSvgDefault.default}#icon-minus-circle"></use>
             </svg>
           </button>
-          <button class="btn--tiny btn--increase-servings">
+          <button class="btn--tiny btn--increase-servings" data-goup="true">
             <svg>
               <use href="${0, _iconsSvgDefault.default}#icon-plus-circle"></use>
             </svg>
@@ -2873,9 +2937,7 @@ class RecipeView extends (0, _viewDefault.default) {
       </div>
 
       <div class="recipe__user-generated">
-        <svg>
-          <use href="${0, _iconsSvgDefault.default}#icon-user"></use>
-        </svg>
+
       </div>
       <button class="btn--round">
         <svg class="">
@@ -2907,7 +2969,6 @@ class RecipeView extends (0, _viewDefault.default) {
         </svg>
       </a>
       </div>`;
-        return item;
     }
     _createHTMLIngredient(ingredient) {
         return `<li class="recipe__ingredient">
@@ -2977,12 +3038,36 @@ var _iconsSvgDefault = parcelHelpers.interopDefault(_iconsSvg);
 class View {
     _parentElement = null;
     _errorMessage = "";
+    update(markup) {
+        const newDOM = document.createRange().createContextualFragment(markup);
+        const newElements = Array.from(newDOM.querySelectorAll("*"));
+        const curElements = Array.from(this._parentElement.querySelectorAll("*"));
+        console.log(newElements);
+        console.log(curElements);
+        newElements.forEach((newEle, i)=>{
+            const curEle = curElements[i];
+            // NOTE: whitespace in html is also a text node!!!!!!!!!!!!!!
+            if (!newEle.isEqualNode(curEle) && newEle.firstChild && newEle.firstChild.nodeType === Node.TEXT_NODE && newEle.firstChild.nodeValue.trim() !== "") curEle.textContent = newEle.textContent;
+            if (!newEle.isEqualNode(curEle)) Array.from(newEle.attributes).forEach((attr)=>curEle.setAttribute(attr.name, attr.value));
+        });
+    }
     renderSpinner() {
         const html = `<div class="spinner">
           <svg>
             <use href="${(0, _iconsSvgDefault.default)}#icon-loader"></use>
           </svg>
           </div>`;
+        this._clear();
+        this._parentElement.insertAdjacentHTML("afterbegin", html);
+    }
+    renderError(message) {
+        const html = `<div class="error">
+            <div>
+                <svg>
+                <use href="${(0, _iconsSvgDefault.default)}#icon-alert-triangle"></use>
+                </svg>
+            </div>
+      <p>${message}</p>`;
         this._clear();
         this._parentElement.insertAdjacentHTML("afterbegin", html);
     }
@@ -3103,27 +3188,91 @@ class ResultsView extends (0, _viewDefault.default) {
             this._parentElement.append(this._createElementReult(result));
         });
     }
+    renderError() {
+        super.renderError(this._errorMessage);
+    }
     _createElementReult(result) {
         const item = document.createElement("li");
         item.classList.add("preview");
-        item.innerHTML = `<a class="preview__link preview__link--active" href="#${result.id}">
+        item.innerHTML = // NOTE: href there will trigger recipeView event handler since it changes the hash
+        `<a class="preview__link" href="#${result.id}">
               <figure class="preview__fig">
               <img src="${result.imageUrl}" alt="Test" />
               </figure>
               <div class="preview__data">
               <h4 class="preview__title">${result.title}</h4>
               <p class="preview__publisher">${result.publisher}</p>
-              <div class="preview__user-generated">
-                  <svg>
-                  <use href="${0, _iconsSvgDefault.default}#icon-user"></use>
-                  </svg>
-              </div>
               </div>
             </a>`;
         return item;
     }
 }
 exports.default = new ResultsView();
+
+},{"./view":"4wVyX","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3","url:../../img/icons.svg":"loVOp"}],"blwqv":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+var _view = require("./view");
+var _viewDefault = parcelHelpers.interopDefault(_view);
+class SearchView extends (0, _viewDefault.default) {
+    _parentElement = document.querySelector(".search");
+    _errorMessage = "";
+    addHandler(handler) {
+        this._parentElement.addEventListener("submit", (e)=>{
+            e.preventDefault();
+            handler();
+        });
+    }
+    getQuery() {
+        const field = this._parentElement.querySelector(".search__field");
+        const query = field.value;
+        field.value = "";
+        return query;
+    }
+}
+exports.default = new SearchView();
+
+},{"./view":"4wVyX","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"9Reww":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+var _view = require("./view");
+var _viewDefault = parcelHelpers.interopDefault(_view);
+var _iconsSvg = require("url:../../img/icons.svg");
+var _iconsSvgDefault = parcelHelpers.interopDefault(_iconsSvg);
+class Pagination extends (0, _viewDefault.default) {
+    _parentElement = document.querySelector(".pagination");
+    render(hasPrevious, hasNext, pageNum) {
+        this._clear();
+        if (hasPrevious) {
+            const html = `<button class="btn--inline pagination__btn--prev">
+            <svg class="search__icon">
+              <use href="${(0, _iconsSvgDefault.default)}#icon-arrow-left"></use>
+            </svg>
+            <span>Page ${pageNum - 1}</span>
+            </button>`;
+            this._parentElement.insertAdjacentHTML("afterbegin", html);
+        }
+        if (hasNext) {
+            const html = `<button class="btn--inline pagination__btn--next">
+                <span>Page ${pageNum + 1}</span>
+                <svg class="search__icon">
+                  <use href="${(0, _iconsSvgDefault.default)}#icon-arrow-right"></use>
+                </svg>
+                </button>`;
+            this._parentElement.insertAdjacentHTML("afterbegin", html);
+        }
+    }
+    addHandler(handler) {
+        // Event delegation
+        this._parentElement.addEventListener("click", (e)=>{
+            const clicked = e.target.closest(".btn--inline");
+            if (!clicked) return;
+            const direction = clicked.classList.item(1).slice(-4);
+            handler(direction);
+        });
+    }
+}
+exports.default = new Pagination();
 
 },{"./view":"4wVyX","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3","url:../../img/icons.svg":"loVOp"}]},["d8XZh","aenu9"], "aenu9", "parcelRequire3a11")
 

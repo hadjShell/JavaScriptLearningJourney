@@ -1966,5 +1966,12 @@ Version: 1.0
 
 * Model-View-Controller architecture
 * ![MVC](img/MVC.png)
-
+* Event handling in MVC
+  * Publisher - Subscriber pattern
+    * Callback functions (`render()`) and `eventListener` in `View` as publisher
+      * Codes that know when to react
+    * `Controller` as subscriber
+      * Codes that want to react
+      * Event handler in a nutshell
+    * Subscribe to publisher by passing in the subscriber function
 * [Look at this article for future read](https://www.freecodecamp.org/news/an-introduction-to-software-architecture-patterns/)

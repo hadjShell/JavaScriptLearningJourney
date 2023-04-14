@@ -3,17 +3,38 @@ import View from "./view";
 import icons from "url:../../img/icons.svg";
 
 class RecipeView extends View {
-    _parentElement = document.querySelector('.recipe');
+  _parentElement = document.querySelector('.recipe');
+  _errorMessage = "We couldn't find that recipe. \nPlease try another one :)";
 
-    render(recipe) {
-        this._clear();
-        this._parentElement.append(this._createElementRecipe(recipe));
-    }
+  render(recipe) {
+    this._clear();
+    this._parentElement.insertAdjacentHTML("afterbegin", this._createHTMLRecipe(recipe));
+  }
 
-    _createElementRecipe(recipe) {
-        const item = document.createElement("div");
-        item.innerHTML =
-            `<figure class="recipe__fig">
+  update(recipe) {
+    super.update(this._createHTMLRecipe(recipe));
+  }
+
+  addHandler(handler) {
+    ["hashchange", "load"].forEach(e => window.addEventListener(e, handler));
+  }
+
+  addServingsHandler(handler) {
+    this._parentElement.addEventListener("click", e => {
+      const clicked = e.target.closest(".btn--increase-servings");
+      if (!clicked) return;
+
+      const goUp = clicked.dataset.goup === "true";
+      handler(goUp);
+    });
+  }
+
+  renderError() {
+    super.renderError(this._errorMessage);
+  }
+
+  _createHTMLRecipe(recipe) {
+    return `<figure class="recipe__fig">
       <img src="${recipe.imageUrl}" alt="${recipe.title}" class="recipe__img" />
       <h1 class="recipe__title">
         <span>${recipe.title}</span>
@@ -36,12 +57,12 @@ class RecipeView extends View {
         <span class="recipe__info-text">servings</span>
 
         <div class="recipe__info-buttons">
-          <button class="btn--tiny btn--increase-servings">
+          <button class="btn--tiny btn--increase-servings" data-goup="false">
             <svg>
               <use href="${icons}#icon-minus-circle"></use>
             </svg>
           </button>
-          <button class="btn--tiny btn--increase-servings">
+          <button class="btn--tiny btn--increase-servings" data-goup="true">
             <svg>
               <use href="${icons}#icon-plus-circle"></use>
             </svg>
@@ -50,9 +71,7 @@ class RecipeView extends View {
       </div>
 
       <div class="recipe__user-generated">
-        <svg>
-          <use href="${icons}#icon-user"></use>
-        </svg>
+
       </div>
       <button class="btn--round">
         <svg class="">
@@ -84,11 +103,10 @@ class RecipeView extends View {
         </svg>
       </a>
       </div>`;
-        return item;
-    }
+  }
 
-    _createHTMLIngredient(ingredient) {
-        return `<li class="recipe__ingredient">
+  _createHTMLIngredient(ingredient) {
+    return `<li class="recipe__ingredient">
       <svg class="recipe__icon">
         <use href="${icons}#icon-check"></use>
       </svg>
@@ -98,16 +116,16 @@ class RecipeView extends View {
         ${ingredient.description}
       </div>
       </li>`;
-    }
+  }
 
-    _createHTMLIngredients(recipe) {
-        let html = `<ul class="recipe__ingredient-list">`;
-        recipe.ingredients.forEach(ingredient => {
-            html += this._createHTMLIngredient(ingredient);
-        });
-        html += `</ul>`;
-        return html;
-    }
+  _createHTMLIngredients(recipe) {
+    let html = `<ul class="recipe__ingredient-list">`;
+    recipe.ingredients.forEach(ingredient => {
+      html += this._createHTMLIngredient(ingredient);
+    });
+    html += `</ul>`;
+    return html;
+  }
 }
 
 export default new RecipeView();

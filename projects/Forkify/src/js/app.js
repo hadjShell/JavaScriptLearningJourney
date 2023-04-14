@@ -1,12 +1,14 @@
 import Recipe from "./model/recipe";
-import { timeout } from "./helper";
+import { AJAX } from "./helper";
 import { KEY_FORKIFY, PATH_FORKIFY, MAX_RECIPES_ON_SEARCH_PAGE, TIMEOUT_SEC } from "./config"
 
 class App {
     #bookmarks = new Set([]);           // set of recipe objects bookmarked by user
-    #recipes = [];                      // array of recipe objects created on api data
-    #currentRecipe = null;              // recipe object currently selected by user
-    #currentSearchPage = null;          // number represents current page in the result components
+    #recipes = [];                      // array of undetailed recipe objects created on api data
+    #currentRecipe = null;              // detailed recipe object currently selected by user
+    #currentSearchPage = 0;          // number represents current page in the result components
+    #hasPrevious = false;               // has previous page?
+    #hasNext = false;                   // has next page?
 
     constructor() { }
 
@@ -15,35 +17,33 @@ class App {
         const { id, title, servings, imageUrl, url, ingredients, publisher, cookingTime } = this.#currentRecipe;
         return { id, title, servings, imageUrl, url, ingredients, publisher, cookingTime };
     }
+    get hasPrevious() { return this.#hasPrevious; }
+    get hasNext() { return this.#hasNext; }
+    get currentSearchPage() { return this.#currentSearchPage; }
+
+    async setCurrentRecipe(id) {
+        this.#currentRecipe = await this._findRecipeById(id);
+    }
 
     async searchRecipe(str = "") {
         try {
+            // Reset the recipes array first whenever a search occurs 
+            this.#recipes = [];
             const url = `${PATH_FORKIFY}?search=${str}&key=${KEY_FORKIFY}`;
-            // Fetch data from api,
-            // if request time is too long, throw error
-            const response = await Promise.race([fetch(url), timeout(TIMEOUT_SEC)]);
-            const data = await response.json();
-            if (!response.ok) throw new Error(`${data.message} (${response.status})`);
-            const dataRecipes = data.data.recipes;
-            const dataIds = await this._getAllRecipesIds(dataRecipes);
+            // Fetch data
+            const data = await AJAX(url)
+            const dataRecipes = data.recipes;
 
             // Initialise app's states
-            // Fetch detailed data based on recipe ids,
-            // if request time is too long, throw error
-            await Promise.race([this._mapDataToRecipe(dataIds), timeout(TIMEOUT_SEC)]);
-            console.log(this.#recipes);
-            // OK
+            await this._mapDataToRecipes(dataRecipes);
             this.#currentSearchPage = 1;
-
-            this.#currentRecipe = this.#recipes[0];     // TODO: fake logic, delete later
-
-            const recipesOnCurrentPage = await this.recipesOnPage(this.#currentSearchPage);
-            return recipesOnCurrentPage;
+            this._hasPreviousOrNext();
         } catch (err) {
             throw err;
         }
     }
 
+    // Generate output data from the recipe objects on current page
     recipesOnPage(pageNum) {
         return new Promise(resolve => {
             resolve(this.#recipes.filter((_, i) =>
@@ -55,9 +55,10 @@ class App {
         });
     }
 
-    async pageUp() { }   // Validation
-
-    async pageDown() { }
+    pagination(direction) {
+        direction === "prev" ? this.#currentSearchPage-- : this.#currentSearchPage++;
+        this._hasPreviousOrNext();
+    }
 
     addRecipe(recipeInfo) {
         // Validation
@@ -69,9 +70,19 @@ class App {
         // Add to recioes array
     }
 
-    changeServings(id, option) {
-        const recipe = this._findRecipeById(id);
-        return option === "increase" ? recipe.increaseQuantity() : recipe.decreaseQuantity();
+    updateServings(goUp) {
+        // check servings
+        if (!goUp && this.#currentRecipe.servings === 1)
+            return false;
+
+        this.#currentRecipe.ingredients.forEach(ingredient => {
+            if (isFinite(ingredient.quantity))
+                ingredient.quantity *=
+                    goUp ? (this.#currentRecipe.servings + 1) / this.#currentRecipe.servings :
+                        (this.#currentRecipe.servings - 1) / this.#currentRecipe.servings;
+        });
+        goUp ? this.#currentRecipe.servings++ : this.#currentRecipe.servings--;
+        return true;
     }
 
     // Methods related to bookmark
@@ -86,32 +97,23 @@ class App {
     }
 
     // Helpers
-    _findRecipeById(id) {
-        return this.#recipes.find(recipe => recipe.id === id);
+    // Get detailed recipe by id
+    async _findRecipeById(id) {
+        const url = `${PATH_FORKIFY}/${id}?key=${KEY_FORKIFY}`;
+        const data = await AJAX(url);
+        return new Recipe(data.recipe);
     }
 
-    // Get all searched recipes id in an array
-    _getAllRecipesIds(dataRecipes) {
+    _mapDataToRecipes(dataRecipes) {
         return new Promise(resolve => {
-            resolve(dataRecipes.map(recipe => recipe.id));
+            dataRecipes.forEach(dataRecipe => this.#recipes.push(new Recipe(dataRecipe)));
+            resolve();
         });
     }
 
-    // Map object data fetched from api to real Recipe objetcs
-    _mapDataToRecipe(dataIds) {
-        return Promise.resolve(dataIds.forEach(id => {
-            // Fetch data from api
-            fetch(`${PATH_FORKIFY}/${id}?key=${KEY_FORKIFY}`)
-                .then(response => {
-                    const data = response.json();
-                    if (!response.ok) throw new Error(`${data.message} (${response.status})`);
-                    return data;
-                })
-                .then(data => {
-                    this.#recipes.push(new Recipe(data.data.recipe));
-                })
-                .catch(err => { throw err; });
-        }));
+    _hasPreviousOrNext() {
+        this.#hasPrevious = this.#currentSearchPage > 1;
+        this.#hasNext = this.#currentSearchPage * MAX_RECIPES_ON_SEARCH_PAGE < this.#recipes.length;
     }
 }
 
