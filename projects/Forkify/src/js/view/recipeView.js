@@ -8,11 +8,19 @@ class RecipeView extends View {
 
   render(recipe) {
     this._clear();
-    this._parentElement.insertAdjacentHTML("afterbegin", this._createHTMLRecipe(recipe));
+    this._parentElement.insertAdjacentHTML("afterbegin", this._generateHTML(recipe));
   }
 
   update(recipe) {
-    super.update(this._createHTMLRecipe(recipe));
+    super.update(this._generateHTML(recipe));
+  }
+
+  toggleButton() {
+    const button = this._parentElement.querySelector(".btn--round use");
+    if (button.href.baseVal.slice(-4) === "fill")
+      button.setAttribute("href", `${icons}#icon-bookmark`);
+    else
+      button.setAttribute("href", `${icons}#icon-bookmark-fill`);
   }
 
   addHandler(handler) {
@@ -29,11 +37,21 @@ class RecipeView extends View {
     });
   }
 
+  addBookmarksHandler(handler) {
+    this._parentElement.addEventListener("click", e => {
+      const clicked = e.target.closest(".btn--round");
+      if (!clicked) return;
+
+      const id = this._parentElement.querySelector(".recipe__details").dataset.id;
+      handler(id);
+    })
+  }
+
   renderError() {
     super.renderError(this._errorMessage);
   }
 
-  _createHTMLRecipe(recipe) {
+  _generateHTML(recipe) {
     return `<figure class="recipe__fig">
       <img src="${recipe.imageUrl}" alt="${recipe.title}" class="recipe__img" />
       <h1 class="recipe__title">
@@ -41,7 +59,7 @@ class RecipeView extends View {
       </h1>
       </figure>
 
-      <div class="recipe__details">
+      <div class="recipe__details" data-id="${recipe.id}">
       <div class="recipe__info">
         <svg class="recipe__info-icon">
           <use href="${icons}#icon-clock"></use>
@@ -75,7 +93,7 @@ class RecipeView extends View {
       </div>
       <button class="btn--round">
         <svg class="">
-          <use href="${icons}#icon-bookmark-fill"></use>
+          <use href="${icons}#icon-bookmark${recipe.isBookmarked ? "-fill" : ""}"></use>
         </svg>
       </button>
       </div>

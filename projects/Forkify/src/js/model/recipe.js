@@ -8,9 +8,10 @@ export default class Recipe {
     #servings = 1;
     #ingredients = [];      // {quantity, unit, description}
     #isGeneratedByUser = false;
+    #isBookmarked = false;
 
     constructor(recipe) {
-        this.#id = recipe.id;    // TODO
+        this.#id = recipe.id;
         this.#title = recipe.title;
         this.#url = recipe.source_url;
         this.#imageUrl = recipe.image_url;
@@ -30,6 +31,8 @@ export default class Recipe {
     get servings() { return this.#servings; }
     get ingredients() { return this.#ingredients; }
     get isGeneratedByUser() { return this.#isGeneratedByUser; }
+    get isBookmarked() { return this.#isBookmarked; }
 
     set servings(ser) { return this.#servings = ser; }
+    set isBookmarked(isBm) { return this.#isBookmarked = isBm; }
 }

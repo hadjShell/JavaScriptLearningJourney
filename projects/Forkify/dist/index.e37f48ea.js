@@ -561,8 +561,8 @@ var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 var _esRegexpFlagsJs = require("core-js/modules/es.regexp.flags.js");
 var _webImmediateJs = require("core-js/modules/web.immediate.js");
 var _runtime = require("regenerator-runtime/runtime");
-var _app = require("./app");
-var _appDefault = parcelHelpers.interopDefault(_app);
+var _service = require("./service");
+var _serviceDefault = parcelHelpers.interopDefault(_service);
 var _resultsView = require("./view/resultsView");
 var _resultsViewDefault = parcelHelpers.interopDefault(_resultsView);
 var _recipeViewJs = require("./view/recipeView.js");
@@ -571,6 +571,8 @@ var _searchView = require("./view/searchView");
 var _searchViewDefault = parcelHelpers.interopDefault(_searchView);
 var _paginationView = require("./view/paginationView");
 var _paginationViewDefault = parcelHelpers.interopDefault(_paginationView);
+var _bookmarksView = require("./view/bookmarksView");
+var _bookmarksViewDefault = parcelHelpers.interopDefault(_bookmarksView);
 if (module.hot) module.hot.accept();
 ///////////////////////////////////////
 async function controlSearch() {
@@ -581,7 +583,7 @@ async function controlSearch() {
         // 2. Load and render results
         await controlResults(key, 1);
         // 3. Render pagination
-        (0, _paginationViewDefault.default).render((0, _appDefault.default).hasPrevious, (0, _appDefault.default).hasNext, (0, _appDefault.default).currentSearchPage);
+        (0, _paginationViewDefault.default).render((0, _serviceDefault.default).hasPrevious, (0, _serviceDefault.default).hasNext, (0, _serviceDefault.default).currentSearchPage);
     } catch (err) {
         console.error(err);
     //resultsView.renderError();
@@ -590,8 +592,8 @@ async function controlSearch() {
 async function controlResults(key, pageNum) {
     try {
         (0, _resultsViewDefault.default).renderSpinner();
-        await (0, _appDefault.default).searchRecipe(key);
-        const results = await (0, _appDefault.default).recipesOnPage(pageNum);
+        await (0, _serviceDefault.default).searchRecipe(key);
+        const results = await (0, _serviceDefault.default).recipesOnPage(pageNum);
         (0, _resultsViewDefault.default).render(results);
     } catch (err) {
         throw err;
@@ -605,8 +607,8 @@ async function controlRecipe() {
         // 2. Render spinner
         (0, _recipeViewJsDefault.default).renderSpinner();
         // 3. Load recipe data and render it
-        await (0, _appDefault.default).setCurrentRecipe(id);
-        (0, _recipeViewJsDefault.default).render((0, _appDefault.default).currentRecipe);
+        await (0, _serviceDefault.default).setCurrentRecipe(id);
+        (0, _recipeViewJsDefault.default).render((0, _serviceDefault.default).currentRecipe);
     } catch (err) {
         console.error(err);
     //recipeView.renderError();
@@ -616,11 +618,11 @@ async function controlRecipe() {
 async function controlPage(direction) {
     try {
         // 1. Pass change to the app
-        (0, _appDefault.default).pagination(direction);
+        (0, _serviceDefault.default).pagination(direction);
         // 2. Render new results and new pagination
-        const results = await (0, _appDefault.default).recipesOnPage((0, _appDefault.default).currentSearchPage);
+        const results = await (0, _serviceDefault.default).recipesOnPage((0, _serviceDefault.default).currentSearchPage);
         (0, _resultsViewDefault.default).render(results);
-        (0, _paginationViewDefault.default).render((0, _appDefault.default).hasPrevious, (0, _appDefault.default).hasNext, (0, _appDefault.default).currentSearchPage);
+        (0, _paginationViewDefault.default).render((0, _serviceDefault.default).hasPrevious, (0, _serviceDefault.default).hasNext, (0, _serviceDefault.default).currentSearchPage);
     } catch (err) {
         console.error(err);
     //return;
@@ -629,18 +631,35 @@ async function controlPage(direction) {
 function controlServings(goUp) {
     // 1. Get goup or godown
     // 2. Calculate new ingredient.quantity
-    if ((0, _appDefault.default).updateServings(goUp)) // 3. Render recipe
-    (0, _recipeViewJsDefault.default).update((0, _appDefault.default).currentRecipe);
+    if ((0, _serviceDefault.default).updateServings(goUp)) // 3. Render recipe
+    (0, _recipeViewJsDefault.default).update((0, _serviceDefault.default).currentRecipe);
+}
+function controlBookmark(id) {
+    // 1. Get recipe id
+    // 2. Pass it back to the server and store it
+    (0, _serviceDefault.default).toggleBookmark(id);
+    const bookmarks = (0, _serviceDefault.default).bookmarks;
+    // 3. Update bookmark view and button view
+    (0, _bookmarksViewDefault.default).render(bookmarks);
+    (0, _recipeViewJsDefault.default).toggleButton();
+}
+function controlLocalBookmarks() {
+    // Get local storage data and render bookmarks
+    const bookmarks = JSON.parse(localStorage.getItem("bookmarks"));
+    (0, _serviceDefault.default).bookmarks = bookmarks;
+    (0, _bookmarksViewDefault.default).render(bookmarks);
 }
 function init() {
+    (0, _bookmarksViewDefault.default).addHandler(controlLocalBookmarks);
     (0, _recipeViewJsDefault.default).addHandler(controlRecipe);
     (0, _recipeViewJsDefault.default).addServingsHandler(controlServings);
+    (0, _recipeViewJsDefault.default).addBookmarksHandler(controlBookmark);
     (0, _searchViewDefault.default).addHandler(controlSearch);
     (0, _paginationViewDefault.default).addHandler(controlPage);
 }
 init();
 
-},{"@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3","./app":"8lRBv","core-js/modules/es.regexp.flags.js":"gSXXb","core-js/modules/web.immediate.js":"49tUX","regenerator-runtime/runtime":"dXNgZ","./view/recipeView.js":"7Olh7","./view/resultsView":"46Nfk","./view/searchView":"blwqv","./view/paginationView":"9Reww"}],"gkKU3":[function(require,module,exports) {
+},{"@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3","core-js/modules/es.regexp.flags.js":"gSXXb","core-js/modules/web.immediate.js":"49tUX","regenerator-runtime/runtime":"dXNgZ","./view/recipeView.js":"7Olh7","./view/resultsView":"46Nfk","./view/searchView":"blwqv","./view/paginationView":"9Reww","./service":"bcGvL","./view/bookmarksView":"uOrlR"}],"gkKU3":[function(require,module,exports) {
 exports.interopDefault = function(a) {
     return a && a.__esModule ? a : {
         default: a
@@ -670,224 +689,7 @@ exports.export = function(dest, destName, get) {
     });
 };
 
-},{}],"8lRBv":[function(require,module,exports) {
-var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
-parcelHelpers.defineInteropFlag(exports);
-var _recipe = require("./model/recipe");
-var _recipeDefault = parcelHelpers.interopDefault(_recipe);
-var _helper = require("./helper");
-var _config = require("./config");
-class App {
-    #bookmarks = new Set([]);
-    #recipes = [];
-    #currentRecipe = null;
-    #currentSearchPage = 0;
-    #hasPrevious = false;
-    #hasNext = false;
-    constructor(){}
-    get bookmarks() {
-        return this.#bookmarks;
-    }
-    get currentRecipe() {
-        const { id , title , servings , imageUrl , url , ingredients , publisher , cookingTime  } = this.#currentRecipe;
-        return {
-            id,
-            title,
-            servings,
-            imageUrl,
-            url,
-            ingredients,
-            publisher,
-            cookingTime
-        };
-    }
-    get hasPrevious() {
-        return this.#hasPrevious;
-    }
-    get hasNext() {
-        return this.#hasNext;
-    }
-    get currentSearchPage() {
-        return this.#currentSearchPage;
-    }
-    async setCurrentRecipe(id) {
-        this.#currentRecipe = await this._findRecipeById(id);
-    }
-    async searchRecipe(str = "") {
-        try {
-            // Reset the recipes array first whenever a search occurs 
-            this.#recipes = [];
-            const url = `${(0, _config.PATH_FORKIFY)}?search=${str}&key=${(0, _config.KEY_FORKIFY)}`;
-            // Fetch data
-            const data = await (0, _helper.AJAX)(url);
-            const dataRecipes = data.recipes;
-            // Initialise app's states
-            await this._mapDataToRecipes(dataRecipes);
-            this.#currentSearchPage = 1;
-            this._hasPreviousOrNext();
-        } catch (err) {
-            throw err;
-        }
-    }
-    // Generate output data from the recipe objects on current page
-    recipesOnPage(pageNum) {
-        return new Promise((resolve)=>{
-            resolve(this.#recipes.filter((_, i)=>i < pageNum * (0, _config.MAX_RECIPES_ON_SEARCH_PAGE) && i >= (pageNum - 1) * (0, _config.MAX_RECIPES_ON_SEARCH_PAGE)).map((recipe)=>{
-                const { id , imageUrl , title , publisher  } = recipe;
-                return {
-                    id,
-                    imageUrl,
-                    title,
-                    publisher
-                };
-            }));
-        });
-    }
-    pagination(direction) {
-        direction === "prev" ? this.#currentSearchPage-- : this.#currentSearchPage++;
-        this._hasPreviousOrNext();
-    }
-    addRecipe(recipeInfo) {
-        // Validation
-        // Create recipe
-        const newRecipe = new (0, _recipeDefault.default)(recipeInfo);
-        newRecipe.isGeneratedByUser = true;
-    // Add to recioes array
-    }
-    updateServings(goUp) {
-        // check servings
-        if (!goUp && this.#currentRecipe.servings === 1) return false;
-        this.#currentRecipe.ingredients.forEach((ingredient)=>{
-            if (isFinite(ingredient.quantity)) ingredient.quantity *= goUp ? (this.#currentRecipe.servings + 1) / this.#currentRecipe.servings : (this.#currentRecipe.servings - 1) / this.#currentRecipe.servings;
-        });
-        goUp ? this.#currentRecipe.servings++ : this.#currentRecipe.servings--;
-        return true;
-    }
-    // Methods related to bookmark
-    bookmarkRecipe(id) {
-        return this.#bookmarks.add(this._findRecipeById(id));
-    }
-    unbookmarkRecipe(id) {
-        return this.#bookmarks.delete(this._findRecipeById(id));
-    }
-    getABookmarkRecipe(id) {
-        return this._findRecipeById(id);
-    }
-    // Helpers
-    // Get detailed recipe by id
-    async _findRecipeById(id) {
-        const url = `${(0, _config.PATH_FORKIFY)}/${id}?key=${(0, _config.KEY_FORKIFY)}`;
-        const data = await (0, _helper.AJAX)(url);
-        return new (0, _recipeDefault.default)(data.recipe);
-    }
-    _mapDataToRecipes(dataRecipes) {
-        return new Promise((resolve)=>{
-            dataRecipes.forEach((dataRecipe)=>this.#recipes.push(new (0, _recipeDefault.default)(dataRecipe)));
-            resolve();
-        });
-    }
-    _hasPreviousOrNext() {
-        this.#hasPrevious = this.#currentSearchPage > 1;
-        this.#hasNext = this.#currentSearchPage * (0, _config.MAX_RECIPES_ON_SEARCH_PAGE) < this.#recipes.length;
-    }
-}
-const app = new App();
-exports.default = app;
-
-},{"@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3","./model/recipe":"f9UiS","./helper":"lVRAz","./config":"k5Hzs"}],"f9UiS":[function(require,module,exports) {
-var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
-parcelHelpers.defineInteropFlag(exports);
-class Recipe {
-    #id = null;
-    #title = "";
-    #url = "";
-    #imageUrl = "";
-    #publisher = "";
-    #cookingTime = 0;
-    #servings = 1;
-    #ingredients = [];
-    #isGeneratedByUser = false;
-    constructor(recipe){
-        this.#id = recipe.id; // TODO
-        this.#title = recipe.title;
-        this.#url = recipe.source_url;
-        this.#imageUrl = recipe.image_url;
-        this.#publisher = recipe.publisher;
-        this.#cookingTime = recipe.cooking_time;
-        this.#servings = recipe.servings;
-        this.#ingredients = recipe.ingredients;
-    }
-    // Getters
-    get id() {
-        return this.#id;
-    }
-    get title() {
-        return this.#title;
-    }
-    get url() {
-        return this.#url;
-    }
-    get imageUrl() {
-        return this.#imageUrl;
-    }
-    get publisher() {
-        return this.#publisher;
-    }
-    get cookingTime() {
-        return this.#cookingTime;
-    }
-    get servings() {
-        return this.#servings;
-    }
-    get ingredients() {
-        return this.#ingredients;
-    }
-    get isGeneratedByUser() {
-        return this.#isGeneratedByUser;
-    }
-    set servings(ser) {
-        return this.#servings = ser;
-    }
-}
-exports.default = Recipe;
-
-},{"@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"lVRAz":[function(require,module,exports) {
-var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
-parcelHelpers.defineInteropFlag(exports);
-parcelHelpers.export(exports, "timeout", ()=>timeout);
-parcelHelpers.export(exports, "AJAX", ()=>AJAX);
-var _config = require("./config");
-function timeout(s) {
-    return new Promise(function(_, reject) {
-        setTimeout(function() {
-            reject(new Error(`Request took too long! Timeout after ${s} second`));
-        }, s * 1000);
-    });
-}
-async function AJAX(url = "") {
-    const response = await Promise.race([
-        fetch(url),
-        timeout((0, _config.TIMEOUT_SEC))
-    ]);
-    const data = await response.json();
-    if (!response.ok) throw new Error(`${data.message} (${response.status})`);
-    return data.data;
-}
-
-},{"@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3","./config":"k5Hzs"}],"k5Hzs":[function(require,module,exports) {
-// Global variables
-var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
-parcelHelpers.defineInteropFlag(exports);
-parcelHelpers.export(exports, "KEY_FORKIFY", ()=>KEY_FORKIFY);
-parcelHelpers.export(exports, "PATH_FORKIFY", ()=>PATH_FORKIFY);
-parcelHelpers.export(exports, "MAX_RECIPES_ON_SEARCH_PAGE", ()=>MAX_RECIPES_ON_SEARCH_PAGE);
-parcelHelpers.export(exports, "TIMEOUT_SEC", ()=>TIMEOUT_SEC);
-const KEY_FORKIFY = "9b310d41-3f64-4015-a0f0-f33097042e2c";
-const PATH_FORKIFY = "https://forkify-api.herokuapp.com/api/v2/recipes";
-const MAX_RECIPES_ON_SEARCH_PAGE = 10;
-const TIMEOUT_SEC = 10;
-
-},{"@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"gSXXb":[function(require,module,exports) {
+},{}],"gSXXb":[function(require,module,exports) {
 var global = require("c877dcf7c6516556");
 var DESCRIPTORS = require("552374ce9aab72bb");
 var defineBuiltInAccessor = require("46b5b2489c7b526c");
@@ -2877,10 +2679,15 @@ class RecipeView extends (0, _viewDefault.default) {
     _errorMessage = "We couldn't find that recipe. \nPlease try another one :)";
     render(recipe) {
         this._clear();
-        this._parentElement.insertAdjacentHTML("afterbegin", this._createHTMLRecipe(recipe));
+        this._parentElement.insertAdjacentHTML("afterbegin", this._generateHTML(recipe));
     }
     update(recipe) {
-        super.update(this._createHTMLRecipe(recipe));
+        super.update(this._generateHTML(recipe));
+    }
+    toggleButton() {
+        const button = this._parentElement.querySelector(".btn--round use");
+        if (button.href.baseVal.slice(-4) === "fill") button.setAttribute("href", `${(0, _iconsSvgDefault.default)}#icon-bookmark`);
+        else button.setAttribute("href", `${(0, _iconsSvgDefault.default)}#icon-bookmark-fill`);
     }
     addHandler(handler) {
         [
@@ -2896,10 +2703,18 @@ class RecipeView extends (0, _viewDefault.default) {
             handler(goUp);
         });
     }
+    addBookmarksHandler(handler) {
+        this._parentElement.addEventListener("click", (e)=>{
+            const clicked = e.target.closest(".btn--round");
+            if (!clicked) return;
+            const id = this._parentElement.querySelector(".recipe__details").dataset.id;
+            handler(id);
+        });
+    }
     renderError() {
         super.renderError(this._errorMessage);
     }
-    _createHTMLRecipe(recipe) {
+    _generateHTML(recipe) {
         return `<figure class="recipe__fig">
       <img src="${recipe.imageUrl}" alt="${recipe.title}" class="recipe__img" />
       <h1 class="recipe__title">
@@ -2907,7 +2722,7 @@ class RecipeView extends (0, _viewDefault.default) {
       </h1>
       </figure>
 
-      <div class="recipe__details">
+      <div class="recipe__details" data-id="${recipe.id}">
       <div class="recipe__info">
         <svg class="recipe__info-icon">
           <use href="${0, _iconsSvgDefault.default}#icon-clock"></use>
@@ -2941,7 +2756,7 @@ class RecipeView extends (0, _viewDefault.default) {
       </div>
       <button class="btn--round">
         <svg class="">
-          <use href="${0, _iconsSvgDefault.default}#icon-bookmark-fill"></use>
+          <use href="${0, _iconsSvgDefault.default}#icon-bookmark${recipe.isBookmarked ? "-fill" : ""}"></use>
         </svg>
       </button>
       </div>
@@ -3038,12 +2853,17 @@ var _iconsSvgDefault = parcelHelpers.interopDefault(_iconsSvg);
 class View {
     _parentElement = null;
     _errorMessage = "";
+    /**
+     * Render the received data to the DOM
+     * @param {Object | Object[]} data The data to be rendered (e.g. recipe)
+     * @returns {undefined}
+     * @this {Object} View instance
+     * @author Jiayuan Zhang 
+     */ render(data) {}
     update(markup) {
         const newDOM = document.createRange().createContextualFragment(markup);
         const newElements = Array.from(newDOM.querySelectorAll("*"));
         const curElements = Array.from(this._parentElement.querySelectorAll("*"));
-        console.log(newElements);
-        console.log(curElements);
         newElements.forEach((newEle, i)=>{
             const curEle = curElements[i];
             // NOTE: whitespace in html is also a text node!!!!!!!!!!!!!!
@@ -3071,6 +2891,7 @@ class View {
         this._clear();
         this._parentElement.insertAdjacentHTML("afterbegin", html);
     }
+    _generateHTML(data) {}
     _clear() {
         this._parentElement.innerHTML = "";
     }
@@ -3273,6 +3094,286 @@ class Pagination extends (0, _viewDefault.default) {
     }
 }
 exports.default = new Pagination();
+
+},{"./view":"4wVyX","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3","url:../../img/icons.svg":"loVOp"}],"bcGvL":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+var _recipe = require("./model/recipe");
+var _recipeDefault = parcelHelpers.interopDefault(_recipe);
+var _helper = require("./helper");
+var _config = require("./config");
+class Service {
+    #bookmarks = new Set([]);
+    #recipes = [];
+    #currentRecipe = null;
+    #currentSearchPage = 0;
+    #hasPrevious = false;
+    #hasNext = false;
+    constructor(){}
+    get bookmarks() {
+        return this.#bookmarks;
+    }
+    get currentRecipe() {
+        const { id , title , servings , imageUrl , url , ingredients , publisher , cookingTime , isGeneratedByUser , isBookmarked  } = this.#currentRecipe;
+        return {
+            id,
+            title,
+            servings,
+            imageUrl,
+            url,
+            ingredients,
+            publisher,
+            cookingTime,
+            isGeneratedByUser,
+            isBookmarked
+        };
+    }
+    get hasPrevious() {
+        return this.#hasPrevious;
+    }
+    get hasNext() {
+        return this.#hasNext;
+    }
+    get currentSearchPage() {
+        return this.#currentSearchPage;
+    }
+    set bookmarks(bms) {
+        return this.#bookmarks = new Set(bms);
+    }
+    async setCurrentRecipe(id) {
+        this.#currentRecipe = await this._findRecipeById(id);
+        this.#bookmarks.forEach((bm)=>{
+            if (bm.id === id) this.#currentRecipe.isBookmarked = true;
+        });
+    }
+    async searchRecipe(str = "") {
+        try {
+            // Reset the recipes array first whenever a search occurs 
+            this.#recipes = [];
+            const url = `${(0, _config.PATH_FORKIFY)}?search=${str}&key=${(0, _config.KEY_FORKIFY)}`;
+            // Fetch data
+            const data = await (0, _helper.AJAX)(url);
+            const dataRecipes = data.recipes;
+            // Initialise app's states
+            await this._mapDataToRecipes(dataRecipes);
+            this.#currentSearchPage = 1;
+            this._hasPreviousOrNext();
+        } catch (err) {
+            throw err;
+        }
+    }
+    // Generate output data from the recipe objects on current page
+    recipesOnPage(pageNum) {
+        return new Promise((resolve)=>{
+            resolve(this.#recipes.filter((_, i)=>i < pageNum * (0, _config.MAX_RECIPES_ON_SEARCH_PAGE) && i >= (pageNum - 1) * (0, _config.MAX_RECIPES_ON_SEARCH_PAGE)).map((recipe)=>{
+                const { id , imageUrl , title , publisher  } = recipe;
+                return {
+                    id,
+                    imageUrl,
+                    title,
+                    publisher
+                };
+            }));
+        });
+    }
+    pagination(direction) {
+        direction === "prev" ? this.#currentSearchPage-- : this.#currentSearchPage++;
+        this._hasPreviousOrNext();
+    }
+    updateServings(goUp) {
+        // check servings
+        if (!goUp && this.#currentRecipe.servings === 1) return false;
+        this.#currentRecipe.ingredients.forEach((ingredient)=>{
+            if (isFinite(ingredient.quantity)) ingredient.quantity *= goUp ? (this.#currentRecipe.servings + 1) / this.#currentRecipe.servings : (this.#currentRecipe.servings - 1) / this.#currentRecipe.servings;
+        });
+        goUp ? this.#currentRecipe.servings++ : this.#currentRecipe.servings--;
+        return true;
+    }
+    toggleBookmark(id) {
+        // Check if already has this bookmark
+        let hasThisBookmark = false;
+        let bookmark = null;
+        this.#bookmarks.forEach((bm)=>{
+            if (bm.id === id) {
+                hasThisBookmark = true;
+                bookmark = bm;
+            }
+        });
+        // Toggle bookmark in the array and local storage
+        if (hasThisBookmark) this.#bookmarks.delete(bookmark);
+        else this.#bookmarks.add(this.currentRecipe);
+        localStorage.setItem("bookmarks", JSON.stringify(Array.from(this.#bookmarks)));
+    }
+    // Helpers
+    // Get detailed recipe by id
+    async _findRecipeById(id) {
+        const url = `${(0, _config.PATH_FORKIFY)}/${id}?key=${(0, _config.KEY_FORKIFY)}`;
+        const data = await (0, _helper.AJAX)(url);
+        return new (0, _recipeDefault.default)(data.recipe);
+    }
+    _mapDataToRecipes(dataRecipes) {
+        return new Promise((resolve)=>{
+            dataRecipes.forEach((dataRecipe)=>this.#recipes.push(new (0, _recipeDefault.default)(dataRecipe)));
+            resolve();
+        });
+    }
+    _hasPreviousOrNext() {
+        this.#hasPrevious = this.#currentSearchPage > 1;
+        this.#hasNext = this.#currentSearchPage * (0, _config.MAX_RECIPES_ON_SEARCH_PAGE) < this.#recipes.length;
+    }
+}
+const service = new Service();
+exports.default = service;
+
+},{"./model/recipe":"f9UiS","./helper":"lVRAz","./config":"k5Hzs","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"f9UiS":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+class Recipe {
+    #id = null;
+    #title = "";
+    #url = "";
+    #imageUrl = "";
+    #publisher = "";
+    #cookingTime = 0;
+    #servings = 1;
+    #ingredients = [];
+    #isGeneratedByUser = false;
+    #isBookmarked = false;
+    constructor(recipe){
+        this.#id = recipe.id;
+        this.#title = recipe.title;
+        this.#url = recipe.source_url;
+        this.#imageUrl = recipe.image_url;
+        this.#publisher = recipe.publisher;
+        this.#cookingTime = recipe.cooking_time;
+        this.#servings = recipe.servings;
+        this.#ingredients = recipe.ingredients;
+    }
+    // Getters
+    get id() {
+        return this.#id;
+    }
+    get title() {
+        return this.#title;
+    }
+    get url() {
+        return this.#url;
+    }
+    get imageUrl() {
+        return this.#imageUrl;
+    }
+    get publisher() {
+        return this.#publisher;
+    }
+    get cookingTime() {
+        return this.#cookingTime;
+    }
+    get servings() {
+        return this.#servings;
+    }
+    get ingredients() {
+        return this.#ingredients;
+    }
+    get isGeneratedByUser() {
+        return this.#isGeneratedByUser;
+    }
+    get isBookmarked() {
+        return this.#isBookmarked;
+    }
+    set servings(ser) {
+        return this.#servings = ser;
+    }
+    set isBookmarked(isBm) {
+        return this.#isBookmarked = isBm;
+    }
+}
+exports.default = Recipe;
+
+},{"@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"lVRAz":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+parcelHelpers.export(exports, "timeout", ()=>timeout);
+parcelHelpers.export(exports, "AJAX", ()=>AJAX);
+var _config = require("./config");
+function timeout(s) {
+    return new Promise(function(_, reject) {
+        setTimeout(function() {
+            reject(new Error(`Request took too long! Timeout after ${s} second`));
+        }, s * 1000);
+    });
+}
+async function AJAX(url = "") {
+    const response = await Promise.race([
+        fetch(url),
+        timeout((0, _config.TIMEOUT_SEC))
+    ]);
+    const data = await response.json();
+    if (!response.ok) throw new Error(`${data.message} (${response.status})`);
+    return data.data;
+}
+
+},{"./config":"k5Hzs","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"k5Hzs":[function(require,module,exports) {
+// Global variables
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+parcelHelpers.export(exports, "KEY_FORKIFY", ()=>KEY_FORKIFY);
+parcelHelpers.export(exports, "PATH_FORKIFY", ()=>PATH_FORKIFY);
+parcelHelpers.export(exports, "MAX_RECIPES_ON_SEARCH_PAGE", ()=>MAX_RECIPES_ON_SEARCH_PAGE);
+parcelHelpers.export(exports, "TIMEOUT_SEC", ()=>TIMEOUT_SEC);
+const KEY_FORKIFY = "9b310d41-3f64-4015-a0f0-f33097042e2c";
+const PATH_FORKIFY = "https://forkify-api.herokuapp.com/api/v2/recipes";
+const MAX_RECIPES_ON_SEARCH_PAGE = 10;
+const TIMEOUT_SEC = 10;
+
+},{"@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"uOrlR":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+var _view = require("./view");
+var _viewDefault = parcelHelpers.interopDefault(_view);
+var _iconsSvg = require("url:../../img/icons.svg");
+var _iconsSvgDefault = parcelHelpers.interopDefault(_iconsSvg);
+class BookmarksView extends (0, _viewDefault.default) {
+    _parentElement = document.querySelector(".bookmarks__list");
+    render(bookmarks) {
+        let html = "";
+        if (bookmarks.size === 0) html = `<div class="message">
+            <div>
+              <svg>
+                <use href="${0, _iconsSvgDefault.default}#icon-smile"></use>
+              </svg>
+            </div>
+            <p>
+              No bookmarks yet. Find a nice recipe and bookmark it :)
+            </p>
+            </div>`;
+        else html = this._generateHTML(bookmarks);
+        this._clear();
+        this._parentElement.insertAdjacentHTML("afterbegin", html);
+    }
+    addHandler(handler) {
+        window.addEventListener("load", handler);
+    }
+    _generateHTML(bookmarks) {
+        let html = "";
+        bookmarks.forEach((bm)=>{
+            html += `<li class="preview">
+            <a class="preview__link" href="#${bm.id}">
+              <figure class="preview__fig">
+                <img src="${bm.imageUrl}" alt="Test" />
+              </figure>
+              <div class="preview__data">
+                <h4 class="preview__name">
+                  ${bm.title}
+                </h4>
+                <p class="preview__publisher">${bm.publisher}</p>
+              </div>
+            </a>
+          </li>`;
+        });
+        return html;
+    }
+}
+exports.default = new BookmarksView();
 
 },{"./view":"4wVyX","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3","url:../../img/icons.svg":"loVOp"}]},["d8XZh","aenu9"], "aenu9", "parcelRequire3a11")
 

@@ -4,12 +4,19 @@ export default class View {
     _parentElement = null;
     _errorMessage = "";
 
+    /**
+     * Render the received data to the DOM
+     * @param {Object | Object[]} data The data to be rendered (e.g. recipe)
+     * @returns {undefined}
+     * @this {Object} View instance
+     * @author Jiayuan Zhang 
+     */
+    render(data) { }
+
     update(markup) {
         const newDOM = document.createRange().createContextualFragment(markup);
         const newElements = Array.from(newDOM.querySelectorAll("*"));
         const curElements = Array.from(this._parentElement.querySelectorAll("*"));
-        console.log(newElements);
-        console.log(curElements);
 
         newElements.forEach((newEle, i) => {
             const curEle = curElements[i];
@@ -47,6 +54,8 @@ export default class View {
         this._clear();
         this._parentElement.insertAdjacentHTML("afterbegin", html);
     }
+
+    _generateHTML(data) { }
 
     _clear() {
         this._parentElement.innerHTML = "";

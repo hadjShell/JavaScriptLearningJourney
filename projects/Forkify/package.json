@@ -3,8 +3,8 @@
   "version": "1.0.0",
   "description": "Recipe application",
   "scripts": {
-    "start": "parcel index.html",
-    "build": "parcel build index.html"
+    "test": "parcel index.html",
+    "build": "parcel build index.html --dist-dir ./dist"
   },
   "author": "Jiayuan Zhang",
   "license": "MIT",

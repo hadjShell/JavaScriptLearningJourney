@@ -2,11 +2,11 @@ import Recipe from "./model/recipe";
 import { AJAX } from "./helper";
 import { KEY_FORKIFY, PATH_FORKIFY, MAX_RECIPES_ON_SEARCH_PAGE, TIMEOUT_SEC } from "./config"
 
-class App {
+class Service {
     #bookmarks = new Set([]);           // set of recipe objects bookmarked by user
     #recipes = [];                      // array of undetailed recipe objects created on api data
     #currentRecipe = null;              // detailed recipe object currently selected by user
-    #currentSearchPage = 0;          // number represents current page in the result components
+    #currentSearchPage = 0;             // number represents current page in the result components
     #hasPrevious = false;               // has previous page?
     #hasNext = false;                   // has next page?
 
@@ -14,15 +14,22 @@ class App {
 
     get bookmarks() { return this.#bookmarks; }
     get currentRecipe() {
-        const { id, title, servings, imageUrl, url, ingredients, publisher, cookingTime } = this.#currentRecipe;
-        return { id, title, servings, imageUrl, url, ingredients, publisher, cookingTime };
+        const { id, title, servings, imageUrl, url, ingredients, publisher, cookingTime, isGeneratedByUser, isBookmarked } = this.#currentRecipe;
+        return { id, title, servings, imageUrl, url, ingredients, publisher, cookingTime, isGeneratedByUser, isBookmarked };
     }
     get hasPrevious() { return this.#hasPrevious; }
     get hasNext() { return this.#hasNext; }
     get currentSearchPage() { return this.#currentSearchPage; }
 
+    set bookmarks(bms) { return this.#bookmarks = new Set(bms); }
+
     async setCurrentRecipe(id) {
         this.#currentRecipe = await this._findRecipeById(id);
+        this.#bookmarks.forEach(bm => {
+            if (bm.id === id) {
+                this.#currentRecipe.isBookmarked = true;
+            }
+        });
     }
 
     async searchRecipe(str = "") {
@@ -60,16 +67,6 @@ class App {
         this._hasPreviousOrNext();
     }
 
-    addRecipe(recipeInfo) {
-        // Validation
-
-        // Create recipe
-        const newRecipe = new Recipe(recipeInfo);
-        newRecipe.isGeneratedByUser = true;
-
-        // Add to recioes array
-    }
-
     updateServings(goUp) {
         // check servings
         if (!goUp && this.#currentRecipe.servings === 1)
@@ -85,15 +82,24 @@ class App {
         return true;
     }
 
-    // Methods related to bookmark
-    bookmarkRecipe(id) {
-        return this.#bookmarks.add(this._findRecipeById(id));
-    }
-    unbookmarkRecipe(id) {
-        return this.#bookmarks.delete(this._findRecipeById(id));
-    }
-    getABookmarkRecipe(id) {
-        return this._findRecipeById(id);
+    toggleBookmark(id) {
+        // Check if already has this bookmark
+        let hasThisBookmark = false;
+        let bookmark = null;
+        this.#bookmarks.forEach(bm => {
+            if (bm.id === id) {
+                hasThisBookmark = true;
+                bookmark = bm;
+            }
+        });
+        // Toggle bookmark in the array and local storage
+        if (hasThisBookmark) {
+            this.#bookmarks.delete(bookmark);
+        }
+        else {
+            this.#bookmarks.add(this.currentRecipe);
+        }
+        localStorage.setItem("bookmarks", JSON.stringify(Array.from(this.#bookmarks)));
     }
 
     // Helpers
@@ -117,5 +123,5 @@ class App {
     }
 }
 
-const app = new App();
-export default app;
+const service = new Service();
+export default service;
