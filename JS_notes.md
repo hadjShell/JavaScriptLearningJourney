@@ -14,6 +14,7 @@ Version: 1.0
   * HTML - Content - Nouns
   * CSS - Style and layout - Adjectives
   * **JavaScript - The real programming language to build web applications - Verbs**
+  
 * What applications that JavaScript can build?
   * Front-end apps
     * React, Angular, Vue, etc.
@@ -23,23 +24,29 @@ Version: 1.0
     * React Native, Ionic
   * Native desktop apps
     * Electron
+  
 * JavaScript is a multi-paradigm interpreted language
   * Modern JavaScript uses just-in-time compilation (no portable files)
+  
 * JavaScript runtime
   * Container including all the things that we need to use JavaScript
+  
   * Different types of JavaScript runtime
+  
   * Runtime in browsers
     * JavaScript engine
       * Program that executes JavaScript code
       * Example: V8 engine for chrome and node.js
-
     * Web APIs
     * Callback queue
-
+  
+    ![js_engine](img\js_engine.png)
+  
   * Runtime in node.js
     * JavaScript engine
     * C++ bindings and thread pool
     * Callback queue
+  
 * JavaScript versions
   * ES6 / ES2015: biggest update to this language
   * New updates to JS every single year
@@ -55,16 +62,19 @@ Version: 1.0
       * Well supported in all modern browsers
       * No support in older browsers
       * Can use most features in production with transpiling and polyfilling
+  
 * How to link JavaScript file to the HTML file?
   * Incline script
     * Put JavaScript code in the `<script>` block
   * External JavaScript files
     * Put code in the `.js` files in the same folder of HTML files
     * Tag `<script src=""></script>` 
+  
 * Strict mode
   * Put `'use strict';` statement in the beginning of the `.js` file
   * Forbid to do certain things
   * Create visible errors
+  
 * Script Loading
   * ![script_loading](img/script_loading.png)
   * Async in head
@@ -167,7 +177,7 @@ Version: 1.0
 
   * BigInt
 
-    * Large integers than the Number type can hold
+    * Large integers than the Number type cannot hold
 
 * Reference data type
 
@@ -216,7 +226,7 @@ Version: 1.0
     * Does perform type coercion
   * Avoid using loose equality operator
 * Logical operators
-  * Use ANY data type, return ANY data type, short-circuiting
+  * **Use ANY data type, return ANY data type**, short-circuiting
   * OR return the first truthy value or the last falsy value if all flasy
   * AND return the first falsy value or the last truthy value if all truthy
 * Bitwise operators
@@ -377,7 +387,7 @@ Version: 1.0
 
   * Depends on how the function is called, which means it is **dynamic**
 
-  * Alone, `this` refers to the **global object**
+  * Alone, `this` refers to the **global object** (`Window` in web browser)
 
   * In method, `this` refers to the **object**
 
@@ -524,8 +534,10 @@ Version: 1.0
   
     * Return a new Array Iterator object that contains the key/value pairs for each index in the array
   
-  * `slice`
+  * `slice(start, end)`
   
+    * Returns a shallow copy of a portion of an array into a new array object selected from `start` to `end` (`end` not included) where `start` and `end` represent the index of items in that array
+    * `start`, `end` can be negative
     * Create a shallow copy of array: `arr.slice()`
   
   * `splice(start, deleteCount)`
@@ -547,7 +559,7 @@ Version: 1.0
       [...arr1, ...arr2]
       ```
   
-  * `join`
+  * `join(separator)`
   
     * Returns a new string by concatenating all of the elements in an array, separated by commas or a specified separator string
   
@@ -613,10 +625,13 @@ Version: 1.0
     * Creates a new array with all sub-array elements concatenated into it recursively up to the specified depth
     * `depth`: The depth level specifying how deep a nested array structure should be flattened. Defaults to 1
   
-  * `fLatMap(callbackFm)`
+  * `flatMap(callbackFm)`
   
     * Returns a new array formed by applying a given callback function to each element of the array, and then flattening the result by one level
+  
     * Identical to a `map()`followed by a `flat()` of depth 1 (`arr.map(callbackFn).flat()`), but slightly more efficient than calling those two methods separately
+  
+      > [A use-case](https://medium.com/@daveford/map-versup-flatmap-14780ab01d2b)
   
   * `sort(compareFn)`
   
@@ -823,7 +838,7 @@ Version: 1.0
     const arr = [...s];
     ```
   
-  * `forEach(function(value, key, map) {})`
+  * `forEach(function(value, key, set) {})`
   
     * `key` and `value` are the same
 
@@ -864,12 +879,12 @@ Version: 1.0
 
   * `keys()`
 
-    * Return an iterable of values in map
+    * Return an iterable of keys in map
     * `[...m.keys()]` to get the array of keys
 
   * `values()`
 
-    * Return an iterable of keys in map
+    * Return an iterable of values in map
 
   * `entries()`
 
@@ -953,7 +968,8 @@ Version: 1.0
 
   * `repeat(count)`
   
-  * Returns a new string which contains the specified number of copies of the string on which it was called, concatenated together
+    * Returns a new string which contains the specified number of copies of the string on which it was called, concatenated together
+  
 
 ### Copy
 
