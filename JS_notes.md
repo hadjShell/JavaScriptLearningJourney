@@ -949,6 +949,8 @@ Version: 1.0
     * The `pattern` can be a string or a [`RegExp`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/RegExp), and the `replacement` can be a string or a function called for each match
     * If `pattern` is a string, only the first occurrence will be replaced
 
+  * `replaceAll`
+
   * `includes`
 
   * `startsWith`
@@ -960,12 +962,12 @@ Version: 1.0
     * Takes a pattern and divides a string into an ordered list of substrings by searching for the pattern, puts these substrings into an array, and returns the array
 
   * `padStart(targetLength, padString)`
-
+  
     * Pads the current string with another string (multiple times, if needed) until the resulting string reaches the given length
     * The padding is applied from the start of the current string
 
   * `padEnd`
-
+  
   * `repeat(count)`
   
     * Returns a new string which contains the specified number of copies of the string on which it was called, concatenated together
@@ -1060,7 +1062,7 @@ Version: 1.0
   * `document.querySelector(selector)`
     * Returns the first `Element` within the document that matches the specified selector
     * `selector`
-      * A string containing one or more selectors to match. This string must be a valid CSS selector string
+      * A **string** containing one or more selectors to match. This string must be a valid CSS selector string
 
   * `document.querySelectorAll(selector)`
     * Returns a `NodeList` of `Element`s
@@ -1157,13 +1159,13 @@ Version: 1.0
     * `toggle()`
       * Add if not contains, remove if contains
 
-    * Add and remove classes is the main way to manipulate the styles instead of manipulating `style` directly
+    * **Add and remove classes is the main way to manipulate the styles** instead of manipulating `style` directly
   * `ELement.src`
     * Absolute url
   * `Element.getAttribute("src")`
     * Relative url
-  * `Element.dataset.${}`
-    * Data attributes
+  * `HTMLElement.dataset.${}`
+    * The **`dataset`** read-only property of the `HTMLElement` interface provides read/write access to [custom data attributes](https://developer.mozilla.org/en-US/docs/Web/HTML/Global_attributes/data-*) (`data-*`) on elements. It exposes a map of strings ([`DOMStringMap`](https://developer.mozilla.org/en-US/docs/Web/API/DOMStringMap)) with an entry for each `data-*` attribute.
 
 * Coordinates
 
@@ -1175,6 +1177,7 @@ Version: 1.0
 
   * `Element.scrollIntoView(scrollIntoViewOptions)`
     * Modern way
+    * Scrolls the element's ancestor containers such that the element on which `scrollIntoView()` is called is visible to the user.
 
 * [Intersection Observer API](https://developer.mozilla.org/en-US/docs/Web/API/Intersection_Observer_API)
 
@@ -1190,6 +1193,7 @@ Version: 1.0
 
   * Sticky nav
   * Lazy loaded images
+  * Infinite scrolling
 
 ### Event and event handlers
 
@@ -1209,7 +1213,9 @@ Version: 1.0
   e.addEventListener("click", function (e) { callbackFn(e, para) });
   
   // or
-  function callbackFn(e, this) {}
+  function callbackFn(e) {
+      console.log(this);
+  }
   e.addEventListener("click", callbackFn.bind(para));
   ```
 
@@ -1259,7 +1265,7 @@ Version: 1.0
 
 ## Number, Math, Date, Intl and Timers
 
-* Numbers
+* `Number`
 
   * Always float numbers
 
@@ -1404,8 +1410,6 @@ Version: 1.0
         callbackFn();
         const timer = setInterval(callbackFn, delay);
         ```
-
-        
 
   * `clearInterval(intervalID)`
 

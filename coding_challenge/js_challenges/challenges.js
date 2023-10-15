@@ -270,69 +270,69 @@ for (const flight of strArr) {
 
 /* // Challenge 14
 const poll = {
-    question: "What is your favourite programming language?",
-    options: ["0: JavaScript", "1: Python", "2: Rust", "3: C++"],
-    This generates [0, 0, 0, 0]. More in the next section!
-    answers: new Array(4).fill(0),
+  question: "What is your favourite programming language?",
+  options: ["0: JavaScript", "1: Python", "2: Rust", "3: C++"],
+  // This generates [0, 0, 0, 0]. More in the next section!
+  answers: new Array(4).fill(0),
 
-    register() {
-        const option = Number(prompt(`${this.question}\n${this.options.join(" \n")}`));
-        switch (option) {
-            case 0:
-            case 1:
-            case 2:
-            case 3:
-                this.answers[option]++;
-                break;
-            default:
-                break;
-        }
-        this.displayResults();
-    },
-
-    displayResults(type = "array") {
-        if (type === "array") {
-            console.log(this.answers);
-        }
-        else if (type === "string") {
-            console.log(`Poll results are ${this.answers.join(", ")}`);
-        }
-        else {
-            console.log("Please select a correct type.");
-        }
+  register() {
+    const option = Number(
+      prompt(`${this.question}\n${this.options.join(" \n")}`)
+    );
+    switch (option) {
+      case 0:
+      case 1:
+      case 2:
+      case 3:
+        this.answers[option]++;
+        break;
+      default:
+        break;
     }
+    this.displayResults();
+  },
+
+  displayResults(type = "array") {
+    if (type === "array") {
+      console.log(this.answers);
+    } else if (type === "string") {
+      console.log(`Poll results are ${this.answers.join(", ")}`);
+    } else {
+      console.log("Please select a correct type.");
+    }
+  },
 };
 
-document.querySelector(".poll").addEventListener("click", poll.register.bind(poll));
-poll.displayResults.call({ answers: [5, 2, 3] }, "string") */
+document
+  .querySelector(".poll")
+  .addEventListener("click", poll.register.bind(poll));
+poll.displayResults.call({ answers: [5, 2, 3] }, "string"); */
 
 /* // Challenge 15
 const dogsJulia = [3, 5, 2, 12, 7];
 const dogsKate = [4, 1, 15, 8, 3];
 
 function check(e, i) {
-    if (e >= 3) {
-        console.log(`Dog number ${i + 1} is an adult, and is ${e} years old`);
-    }
-    else
-        console.log(`Dog number ${i + 1} is still a puppy`);
+  if (e >= 3) {
+    console.log(`Dog number ${i + 1} is an adult, and is ${e} years old`);
+  } else console.log(`Dog number ${i + 1} is still a puppy`);
 }
 
 function checkDogs(dogs1, dogs2) {
-    const copyDogs1 = dogs1.slice(1, -2);
-    copyDogs1.forEach(check);
-    dogs2.forEach(check);
+  const copyDogs1 = dogs1.slice(1, -2);
+  copyDogs1.forEach(check);
+  dogs2.forEach(check);
 }
 
-checkDogs(dogsJulia, dogsKate); */
+checkDogs(dogsJulia, dogsKate);
 
-/* // Challenge 16, 17
+// Challenge 16, 17
 function calcAverageHumanAge(dogs) {
-    return dogs
-        .map(age => age <= 2 ? 2 * age : 16 + 4 * age)
-        .filter(age => age >= 18)
-        .reduce((avg, age, _, arr) => avg + age / arr.length, 0);
-};
+  return dogs
+    .map(age => (age <= 2 ? 2 * age : 16 + 4 * age))
+    .filter(age => age >= 18)
+    .reduce((avg, age, _, arr) => avg + age / arr.length, 0);
+}
 
 const ages = [16, 6, 10, 5, 6, 1, 4];
 console.log(calcAverageHumanAge(ages));
@@ -340,33 +340,40 @@ console.log(calcAverageHumanAge.toString()); */
 
 /* // Challenge 18
 const dogs = [
-    { weight: 22, curFood: 250, owners: ['Alice', 'Bob'] },
-    { weight: 8, curFood: 200, owners: ['Matilda'] },
-    { weight: 13, curFood: 275, owners: ['Sarah', 'John'] },
-    { weight: 32, curFood: 340, owners: ['Michael'] },
+  { weight: 22, curFood: 250, owners: ["Alice", "Bob"] },
+  { weight: 8, curFood: 200, owners: ["Matilda"] },
+  { weight: 13, curFood: 275, owners: ["Sarah", "John"] },
+  { weight: 32, curFood: 340, owners: ["Michael"] },
 ];
-dogs.forEach(dog => dog.rcmdFood = dog.weight ** 0.75 * 28);
+dogs.forEach(dog => (dog.rcmdFood = dog.weight ** 0.75 * 28));
 
 function muchOrLittle(dog) {
-    if (dog.curFood > dog.rcmdFood)
-        return "Eating too much!";
-    else if (dog.curFood < dog.rcmdFood)
-        return "Eating too little!";
-    else
-        return "Perfect!";
+  if (dog.curFood > dog.rcmdFood) return "Eating too much!";
+  else if (dog.curFood < dog.rcmdFood) return "Eating too little!";
+  else return "Perfect!";
 }
 function okay(dog) {
-    return dog.curFood >= 0.9 * dog.rcmdFood && dog.curFood <= 1.1 * dog.rcmdFood;
+  return dog.curFood >= 0.9 * dog.rcmdFood && dog.curFood <= 1.1 * dog.rcmdFood;
 }
 
-console.log("Sarah's dog: " + muchOrLittle(dogs.find(dog => dog.owners.includes("Sarah"))));
+console.log(
+  "Sarah's dog: " + muchOrLittle(dogs.find(dog => dog.owners.includes("Sarah")))
+);
 
-const ownersEatTooMuch = dogs.reduce((ownersEatTooMuch, dog) =>
-    (dog.curFood > dog.rcmdFood) ? ownersEatTooMuch.concat(dog.owners) : ownersEatTooMuch,
-    []);
-const ownersEatTooLittle = dogs.reduce((ownersEatTooLittle, dog) =>
-    (dog.curFood < dog.rcmdFood) ? ownersEatTooLittle.concat(dog.owners) : ownersEatTooLittle,
-    []);
+const ownersEatTooMuch = dogs.reduce(
+  (ownersEatTooMuch, dog) =>
+    dog.curFood > dog.rcmdFood
+      ? ownersEatTooMuch.concat(dog.owners)
+      : ownersEatTooMuch,
+  []
+);
+const ownersEatTooLittle = dogs.reduce(
+  (ownersEatTooLittle, dog) =>
+    dog.curFood < dog.rcmdFood
+      ? ownersEatTooLittle.concat(dog.owners)
+      : ownersEatTooLittle,
+  []
+);
 console.log(`${ownersEatTooMuch.join(" and ")}'s dogs eat too much!
 ${ownersEatTooLittle.join(" and ")}'s dogs eat too little!`);
 
@@ -374,9 +381,8 @@ console.log(dogs.some(dog => muchOrLittle(dog) === "Perfect!"));
 console.log(dogs.some(okay));
 
 const okayDogs = dogs.reduce((okayDogs, dog) => {
-    if (okay(dog))
-        okayDogs.push(dog);
-    return okayDogs;
+  if (okay(dog)) okayDogs.push(dog);
+  return okayDogs;
 }, []);
 console.log(okayDogs);
 
