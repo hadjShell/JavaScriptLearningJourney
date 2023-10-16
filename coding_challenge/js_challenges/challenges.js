@@ -432,8 +432,9 @@ tesla.acc();
 tesla.brake();
 tesla.chargeBattery(90);
 tesla.acc();
+*/
 
-// Challenge 21
+/* // Challenge 21
 function whereAmI(lat, lng) {
   fetch(
     `https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${lat}&longitude=${lng}&localityLanguage=en`
@@ -493,7 +494,37 @@ console.log("1: Will get location");
   }
   console.log("3: Finished getting location");
 })();
+*/
 
-let animals = ["jaguar", "eagle"];
-animals.reverse(); //Missing Line
-console.log(animals.pop()); //Prints jaguar */
+const getPosition = function () {
+  return new Promise(function (resolve, reject) {
+    navigator.geolocation.getCurrentPosition(resolve, reject);
+  });
+};
+
+async function AJAX(url) {
+  const response = await fetch(url, {
+    method: "GET",
+  });
+  if (!response.ok) throw new Error(`${data.message} (${response.status})`);
+  const data = await response.json();
+  return data.features[0].properties;
+}
+
+async function whereAmI() {
+  try {
+    const pos = await getPosition();
+    const { latitude: lat, longitude: lon } = pos.coords;
+    const data = await AJAX(
+      `https://api.geoapify.com/v1/geocode/reverse?lat=${lat}&lon=${lon}&apiKey=6036bcfca350451986ef64ecff3aaef8`
+    );
+    console.log(data);
+    console.log(`You are in ${data.name}, ${data.country}`);
+  } catch (err) {
+    console.log(err);
+  }
+}
+
+(async function () {
+  await whereAmI();
+})();

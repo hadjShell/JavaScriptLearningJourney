@@ -1426,7 +1426,7 @@ Version: 1.0
   * Constructor functions
     * Technique to create objects from a function
     * This is how built-in objects like Arrays, Maps or Sets are actually implemented
-  * ES6 Classess
+  * ES6 Classes
     * Modern alternative to constructor function syntax
     * "Syntactic sugar": works like constructor functions behind the scenes
     * Do NOT behave like classical OOP
@@ -1438,7 +1438,7 @@ Version: 1.0
 * Syntax
 
   ```javascript
-  const ClassNmae = function (field1, field2) {
+  const ClassName = function (field1, field2) {
       this.field1 = field1;
       this.field2 = field2;
   }
@@ -1469,7 +1469,18 @@ Version: 1.0
 
 * Prototype chain
 
-  ![prototype_chain](img/prototype_chain.png)
+  ![prototype_chain](img/prototype_chain.jpg)
+
+  * ```javascript
+    // the Behavior of the top prototype chain
+    Object.__proto__ === Function.prototype
+    Function.__proto__ === Function.prototype
+    Function.prototype.prototype === undefined
+    Object.__proto__.__proto__ === Object.prototype 
+    Object.__proto__.__proto__.__proto__ === null
+    ```
+
+    > [A good explanation of this messy behavior](https://stackoverflow.com/questions/40920909/what-is-in-object-proto)
 
 * Static methods
 
@@ -1682,7 +1693,7 @@ Version: 1.0
   });
   ```
 
-* Call back hell
+* **Call back hell**
 
   * The problem of nested callback functions for executing asynchronous operations **in order**
 
@@ -1706,7 +1717,7 @@ Version: 1.0
     * `Promise.prototype.catch()`
       * It is a shortcut for `Promise.prototype.then(undefined, reject)`
     * `Promise.prototype.finally(final)`
-    * Promise is consumed and new promise is built and settled during `then()`, therefore asynchronous operations are executed in order
+    * Promise is consumed and new promise is built and settled during `then()`, therefore asynchronous operations are executed **in order**
     * Actually it is still nested, but it is coded in a non-nested way
     * `then()` is actually a new promisification (build -> callback -> settled)
   
@@ -1759,6 +1770,8 @@ Version: 1.0
 
     * `Promise(function(resolve, reject) {})`
 
+      * It is primarily used to wrap callback-based APIs (the `executor`) that do not already support promises
+
     * `Promise.resolve(value)`
 
       * Returns a `Promise` object that is fulfilled with a given `value`
@@ -1770,7 +1783,7 @@ Version: 1.0
     * Promisify callback functions
 
       * So that we can chain all promises  (**callbacks converted to promise workflow**)
-
+  
       ```javascript
       // The para is the executor
       const wait = (seconds) => new Promise(function(resolve) {
@@ -1779,15 +1792,17 @@ Version: 1.0
       wait(2).then(function() {console.log("I have waited for 2 seconds");});
       ```
 
+  * ![promises](img\promises.png)
+
   * Pending
-
+  
     * Execute the executor (equivalent to callback execution)
-
+  
   * Settled
     * Asynchronous tasks are finished 
-
+  
     * Fulfilled or Rejected
-
+  
     * | myPromise.state | myPromise.result |
       | :-------------- | :--------------- |
       | "pending"       | `undefined`      |
@@ -1796,10 +1811,12 @@ Version: 1.0
 
   * Consume promises
 
+    * Consuming promises is actually executing functions
+  
     * `then()`, `catch()`, `finally()`
-
+  
     * `async` and `await`
-
+    
       * *`async `and `await` make promises easier to write*
         * No more `then`
         * **Asynchronous operation written in synchronous way**
@@ -1807,6 +1824,7 @@ Version: 1.0
       * All functions invoked in `async` functions should be `async` not callback functions
       * The `await` keyword can only be used inside an `async` function
       * The `await` keyword makes the function pause the execution and wait for a resolved promise before it continues
+      * `await` returns **the fulfillment value of the promise** or `thenable`object, or, if the expression is not `thenable`, the expression's own value
       * Use with error handling `try...catch`
         * Rethrow the `error` in `catch` block will manually reject `async` function
       
