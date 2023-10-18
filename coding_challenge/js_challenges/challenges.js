@@ -496,6 +496,8 @@ console.log("1: Will get location");
 })();
 */
 
+const arr = [1, 2, 3];
+
 const getPosition = function () {
   return new Promise(function (resolve, reject) {
     navigator.geolocation.getCurrentPosition(resolve, reject);
@@ -519,12 +521,11 @@ async function whereAmI() {
       `https://api.geoapify.com/v1/geocode/reverse?lat=${lat}&lon=${lon}&apiKey=6036bcfca350451986ef64ecff3aaef8`
     );
     console.log(data);
+    arr.forEach(e => console.log(e));
     console.log(`You are in ${data.name}, ${data.country}`);
   } catch (err) {
     console.log(err);
   }
 }
 
-(async function () {
-  await whereAmI();
-})();
+await whereAmI();

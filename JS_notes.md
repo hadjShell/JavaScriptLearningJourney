@@ -1102,6 +1102,8 @@ Version: 1.0
 
     * Returns a new created `Element` specified by `tagName`
 
+  * `document.createRange().createContextualFragment(markup)`
+
   * `Node.cloneNode(deep)`
 
     * Return a new cloned `Node`. The cloned node has no parent and is not part of the document, *until* it is added to another node that is part of the document
@@ -1988,11 +1990,11 @@ Version: 1.0
 
 * Web application components
   * State and database
-  * Business Logic
-    * Code that solves the actual business problem
   * HTTP libaray
     * For AJAX
     * Optional but almost always necessary in real-world apps
+  * Business Logic
+    * Code that solves the actual business problem
   * Application logic (Router)
     * Code that is only concerned about the implementation of application itself
     * Handles navigation and UI events
