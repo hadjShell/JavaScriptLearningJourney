@@ -10,7 +10,7 @@
   "author": "Jiayuan Zhang",
   "license": "ISC",
   "dependencies": {
-    "leaflet": "^1.9.3"
+    "leaflet": "^1.9.4"
   },
   "devDependencies": {
     "parcel": "^2.8.3"

@@ -1,5 +1,5 @@
 ---
-Author: Jiayuan Zhang
+lAuthor: Jiayuan Zhang
 Date: 2.27.2023
 Version: 1.0
 ---
@@ -295,9 +295,9 @@ Version: 1.0
 
 ***
 
-## Functions
+## Function
 
-* Functions in JavaScript are **first-class objects**, **which means they are treated as variables**, so in JavaScript we can 
+* Functions in JavaScript are **first-class built-in objects**, **which means they are treated as variables**, so in JavaScript we can 
 
   * *Store functions in variables or properties*
   * *Pass functions as arguments to other functions*
@@ -359,7 +359,7 @@ Version: 1.0
 
   ```javascript
   function createBooking(
-  	flightNum, 
+  		flightNum, 
        numPassengers = 1, 
        price = 199 * numPassengers) {}
   
@@ -506,7 +506,7 @@ Version: 1.0
   
   * Rest pattern (pack)
   
-    * The rest element must be the last element
+    * The rest element must be the last part
   
     ```javascript
     const arr = [1, 2 ,3 ,4 ,5];
@@ -625,7 +625,7 @@ Version: 1.0
     * Creates a new array with all sub-array elements concatenated into it recursively up to the specified depth
     * `depth`: The depth level specifying how deep a nested array structure should be flattened. Defaults to 1
   
-  * `flatMap(callbackFm)`
+  * `flatMap(callbackFn)`
   
     * Returns a new array formed by applying a given callback function to each element of the array, and then flattening the result by one level
   
@@ -686,7 +686,11 @@ Version: 1.0
   
   * ![array_method](img/array_method.png)
 
-### Objects
+### Objects (Literal Object)
+
+* In computer science, an object is a value in memory which is possibly referenced by an [identifier](https://developer.mozilla.org/en-US/docs/Glossary/Identifier). In JavaScript, objects are the only [mutable](https://developer.mozilla.org/en-US/docs/Glossary/Mutable) values
+
+* [Functions](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Functions) are, in fact, also objects with the additional capability of being *callable*
 
 * Syntax
 
@@ -869,7 +873,7 @@ Version: 1.0
     * Return the value according to the key
     * Return `undefined` if there is not such a key
 
-  * `has()`
+  * `has(key)`
 
     * Check if a map has a certain key
 
@@ -1200,7 +1204,7 @@ Version: 1.0
 ### Event and event handlers
 
   * An event is something happened on the page
-  * **JavaScript will generate an object which contains all the information about the event when an event occurs**
+  * **Browser will generate an object which contains all the information about the event when an event occurs**
   * Event handler: the callback function accepts a single parameter: an object based on [`Event`](https://developer.mozilla.org/en-US/docs/Web/API/Event) describing the event that has occurred, and it returns nothing
   * **In an event handler function *(except arrow function)*, `this` always points to the element on which that handler is attached to**
 
@@ -1385,7 +1389,7 @@ Version: 1.0
 
 * Timers
 
-  * `setTimeout(callbackFn, dalay, param1, param2, paramn)`
+  * `setTimeout(callbackFn, delay, param1, param2, paramn)`
 
     * Sets a timer which executes a function or specified piece of code once the timer expires
     * Returns an timeout ID which uniquely identifies the timeout
@@ -1419,14 +1423,22 @@ Version: 1.0
 
 ## OOP In JavaScript
 
+* [READ THIS!!!](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Inheritance_and_the_prototype_chain)
 * Prototype and Object
-  * In terms of Class and Instance (but not the same)
-    * JavaScript doesn't have Class
-  * Objects are linked to a prototype object
-  * Prototypal inheritance/delegation: the prototype contains methods that are accessible to all objects linked to that prototype
+  * Like Class and Instance (but not the same)
+  * **JavaScript doesn't have Class**
+* Prototype chain
+  * Each object has an internal link to another object called its *prototype* (`__proto__`)
+  * That prototype object has a prototype of its own, and so on until an object is reached with `null` as its prototype
+  * By definition, `null` has no prototype and acts as the final link in this **prototype chain**. 
+  * The prototype contains methods that are accessible to all objects linked to that prototype
+  * Object literal (without `__proto__` key) automatically have `Object.prototype` as their `__proto_`
+  * <img src="img/prototype_chain.jpg" alt="prototype_chain" style="zoom:150%;" />
+
 * Three ways of implementing OOP in JavaScript
   * Constructor functions
     * Technique to create objects from a function
+    * Avoid manually binding `__proto__` for every object creation
     * This is how built-in objects like Arrays, Maps or Sets are actually implemented
   * ES6 Classes
     * Modern alternative to constructor function syntax
@@ -1458,31 +1470,26 @@ Version: 1.0
 
 * Never declare methods in constructor functions
 
-* Every object in JavaScript automatically has a property `prototype`
+  > If a non-primitive is returned from the constructor function, that value will become the result of the `new` expression. In this case the `[[Prototype]]` may not be correctly bound — but this should not happen much in practice.
 
-* ***Every object that is created by a certain constructor function will get access to all the methods and properties that we define on the constructors prototype property***
+* ***Every object that is created by a certain constructor function will get access to all the methods and properties that we define on the constructor's `prototype` property because it will automatically have the constructor's `prototype` property as its `__proto__`***
 
-* `ClassName.prototype` is an object which is the prototype of the `obj`
+* `Constructor.prototype` is only useful when constructing instances. It has nothing to do with `Constructor.__proto__`, which is the constructor function's *own* prototype, which is `Function.prototype` — that is, `Object.getPrototypeOf(Constructor) === Function.prototype`.
 
-  * `obj.__proto__ === ClassName.prototype`
-  * `ClassName.prototype.isPrototypeOf(obj) === true`
-  * `ClassName.prototype.isPrototypeOf(ClassName) === false`
-  * `ClassName.prototype.constructor === ClassName`
+* ```javascript
+  // the Behavior of the top prototype chain
+  obj.__proto__ === ClassName.prototype
+  ClassName.prototype.constructor === ClassName
+  
+  Object.__proto__ === Function.prototype
+  Function.__proto__ === Function.prototype
+  
+  Function.prototype.prototype === undefined
+  Object.__proto__.__proto__ === Object.prototype 
+  Object.__proto__.__proto__.__proto__ === null
+  ```
 
-* Prototype chain
-
-  ![prototype_chain](img/prototype_chain.jpg)
-
-  * ```javascript
-    // the Behavior of the top prototype chain
-    Object.__proto__ === Function.prototype
-    Function.__proto__ === Function.prototype
-    Function.prototype.prototype === undefined
-    Object.__proto__.__proto__ === Object.prototype 
-    Object.__proto__.__proto__.__proto__ === null
-    ```
-
-    > [A good explanation of this messy behavior](https://stackoverflow.com/questions/40920909/what-is-in-object-proto)
+  > [A good explanation of this messy behavior](https://stackoverflow.com/questions/40920909/what-is-in-object-proto)
 
 * Static methods
 
@@ -1544,9 +1551,44 @@ Version: 1.0
   const obj = Object.create(ClassName);
   ```
 
+* The `__proto__` of this object is the first argument of the function
+
 * Be aware of the difference: **NOT** "fake class"
 
 ### Inheritance
+
+* When an inherited function is executed, the value of `this` points to the inheriting object, not to the prototype object where the function is an own property
+
+  ```javascript
+  const parent = {
+    value: 2,
+    method() {
+      return this.value + 1;
+    },
+  };
+  
+  console.log(parent.method()); // 3
+  // When calling parent.method in this case, 'this' refers to parent
+  
+  // child is an object that inherits from parent
+  const child = {
+    __proto__: parent,
+  };
+  console.log(child.method()); // 3
+  // When child.method is called, 'this' refers to child.
+  // So when child inherits the method of parent,
+  // The property 'value' is sought on child. However, since child
+  // doesn't have an own property called 'value', the property is
+  // found on the [[Prototype]], which is parent.value.
+  
+  child.value = 4; // assign the value 4 to the property 'value' on child.
+  // This shadows the 'value' property on parent.
+  // The child object now looks like:
+  // { value: 4, __proto__: { value: 2, method: [Function] } }
+  console.log(child.method()); // 5
+  // Since child now has the 'value' property, 'this.value' means
+  // child.value instead
+  ```
 
 * Constructor function
 
@@ -1563,8 +1605,12 @@ Version: 1.0
     this.course = course;
   };
   // Linking prototypes
+  // Old way
   Student.prototype = Object.create(Person.prototype);
   Student.prototype.constructor = Student;
+  // New way
+  Object.setPrototyeOf(Student.prototype, Person.prototype);
+  
   Student.prototype.introduce = function () {
     console.log(`My name is ${this.firstName} and I study ${this.course}`);
   };
@@ -1671,6 +1717,171 @@ Version: 1.0
 * Asynchronous code is executed after a task that runs in the background finishes
 * Asynchronous code is non-blocking
 
+### Promises
+
+* Callbacks used to be the main way asynchronous functions were implemented in JavaScript
+
+* Eventhandlers are asynchronous functions
+
+* Call back hell
+
+  * The problem of nested callback functions for executing asynchronous operations **in order**
+  * To overcome this issue, modern JavaScript use `Promise`
+
+* An **object** that is used as a placeholder for the future result of an asynchronous operation
+
+* With a promise-based API, the asynchronous function starts the operation and returns a `Promise`object
+
+* You can then attach handlers to this promise object, and these handlers will be executed when the operation has succeeded or failed
+
+* Instead of nesting callbacks, we can chain promises for a sequence of asynchronous operations
+
+* Lifecycle
+
+  * Build promises (**Convert callback-based API to Promise-based API**)
+
+    * `Promise(executor)`
+
+      * `executor`
+        * A function to be executed by the constructor
+        * It receives two functions as parameters: `resolveFunc` and `rejectFunc`
+
+    * When called via `new`, the `Promise` constructor returns a promise object. The promise object will become ***resolved*** when either of the functions `resolveFunc` or `rejectFunc` are invoked
+
+    * Promisify callback functions
+
+      * So that we can chain all promises  (**callbacks converted to promise workflow**)
+
+      ```javascript
+      // wait now is a promise-based API
+      const wait = (seconds) => new Promise(function(resolve) {
+          setTimeout(() => resolve(seconds), seconds * 1000);
+        	console.log("Start");
+      });
+      wait(2).then(value => {console.log(`I have waited for ${value} seconds`);});
+      console.log("Waiting...");
+      ```
+
+  * ![promises](img\promises.png)
+
+  * Pending
+
+    * The promise has been created, and the asynchronous function it's associated with has not succeeded or failed yet
+
+  * Settled
+
+    * Asynchronous tasks are finished 
+
+    * Fulfilled or Rejected
+
+    * | myPromise.state | myPromise.result |
+      | :-------------- | :--------------- |
+      | "pending"       | `undefined`      |
+      | "fulfilled"     | a result value   |
+      | "rejected"      | an error object  |
+
+* Consume promises
+
+  * Consuming promises is actually executing functions
+
+  * [`then()`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise/then)
+
+  * [`catch()`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise/catch)
+
+  * [`finally()`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise/finally)
+
+  * `Promise.resolve(value)`
+    * Returns a `Promise` object that is fulfilled with a given `value`
+
+  * `Promise.reject(error)`
+
+    * Returns a `Promise` object that is rejected with a given `error`
+  * Promise is consumed and new promise is built and settled during `then()`, therefore asynchronous operations are executed **in order**
+  * Actually it is still nested, but it is coded in a non-nested way
+  * `then()` is actually a new promisification (build -> callback -> settled)
+
+* [**A typical flow**](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise/Promise#description)
+
+* `Promise.all()`
+
+  * Used for running Promises in parallel
+  * Takes an iterable of promises as input and returns a single `Promise`
+  * This returned promise fulfills when all of the input's promises **fulfill** (including when an empty iterable is passed), with an **array** of the fulfillment values
+  * It rejects when any of the input's promises rejects, with this first rejection reason
+
+* `Promise.race()`
+
+  * Takes an iterable of promises as input and returns a single `Promise`
+  * This returned promise settles with the eventual state of the first promise that settles
+  * Usually use with a timer
+
+* `Promise.allSettled()`
+
+  * Takes an iterable of promises as input and returns a single `Promise`
+  * This returned promise fulfills when all of the input's promises **settle** (including when an empty iterable is passed), with an array of objects that describe the outcome of each promise
+
+* `Promise.any()`
+
+  * Takes an iterable of promises as input and returns a single `Promise`
+  * This returned promise fulfills when any of the input's promises fulfills, with this first fulfillment value
+  * It rejects when all of the input's promises reject (including when an empty iterable is passed), with an [`AggregateError`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/AggregateError) containing an array of rejection reasons
+
+### `async`, `await`
+
+* *`async `and `await` make promises easier to write*
+  * No more `then`
+  * **Asynchronous operation written in synchronous way**
+* The keyword `async` before a function makes the function return a **promise** (**always fulfilled not rejected**)
+* All functions invoked in `async` functions should be `async` not callback functions
+* The `await` keyword can only be used inside an `async` function
+* The `await` keyword makes the function pause the execution and wait for a resolved promise before it continues
+* Inside an async function, you can use the `await` keyword before a call to a function that returns a promise. This makes the code wait at that point until the promise is settled, at which point **the fulfilled value of the promise is treated as a return value, or the rejected value is thrown**
+* Rethrow the `error` in `catch` block will manually reject `async` function returned promise
+* Also, note that you can only use `await` inside an `async` function, unless your code is in a JavaScript module
+
+```javascript
+// Promisify geolocation
+const getPosition = function () {
+  return new Promise(function (resolve, reject) {
+    navigator.geolocation.getCurrentPosition(resolve, reject);
+  });
+};
+
+const whereAmI = async function () {
+  try {
+    // Geolocation
+    const pos = await getPosition();
+    const { latitude: lat, longitude: lng } = pos.coords;
+    // Reverse geocoding
+    const resGeo = await fetch(`https://geocode.xyz/${lat},${lng}?geoit=json`);
+    if (!resGeo.ok) throw new Error('Problem getting location data');
+    const dataGeo = await resGeo.json();
+    return `You are in ${dataGeo.city}, ${dataGeo.country}`;
+  } catch (err) {
+    // Reject promise returned from async function
+    throw err;
+  }
+};
+console.log('1: Will get location');
+// const city = whereAmI();
+// console.log(city);
+// whereAmI()
+//   .then(city => console.log(`2: ${city}`))
+//   .catch(err => console.error(`2: ${err.message} 💥`))
+//   .finally(() => console.log('3: Finished getting location'));
+
+// More async way
+(async function () {
+  try {
+    const city = await whereAmI();
+    console.log(`2: ${city}`);
+  } catch (err) {
+    console.error(`2: ${err.message} 💥`);
+  }
+  console.log('3: Finished getting location');
+})();
+```
+
 ### AJAX
 
 * Asynchronous JavaScript And XML
@@ -1695,36 +1906,18 @@ Version: 1.0
   });
   ```
 
-* **Call back hell**
-
-  * The problem of nested callback functions for executing asynchronous operations **in order**
-
 * Modern way
+
+  * [Doc](https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API/Using_Fetch)
 
   * `Fetch` API
 
-    * `fetch(url)`
+    * `fetch(url, options)`
       * Starts the process of fetching a resource from the network, returning a **promise** which is fulfilled once the response is available
       * Only rejects **when a network error is encountered**
-    * `Promise.prototype.then(resolve, reject)`
-      * It immediately returns an equivalent `Promise` object, allowing you to chain calls to other promise methods
-      * `resolve(value)`
-        * Its return value becomes the fulfillment value of the promise returned by `then()`
-        * The function is called with the following arguments `value`: The value that the promise was fulfilled with
-        * If it is not a function, it is internally replaced with an *identity* function (`(x) => x`) which simply passes the fulfillment value forward
-      * `reject(error)`
-        *  Its return value becomes the fulfillment value of the promise returned by `catch()`
-        * The function is called with the following arguments `error`: The `error` object that the promise was rejected with
-        * If it is not a function, it is internally replaced with a *thrower* function (`(x) => { throw x; }`) which throws the rejection reason it received
-    * `Promise.prototype.catch()`
-      * It is a shortcut for `Promise.prototype.then(undefined, reject)`
-    * `Promise.prototype.finally(final)`
-    * Promise is consumed and new promise is built and settled during `then()`, therefore asynchronous operations are executed **in order**
-    * Actually it is still nested, but it is coded in a non-nested way
-    * `then()` is actually a new promisification (build -> callback -> settled)
-  
+
   * Example
-  
+
     ```javascript
     const getJSON = function (url, errorMsg = 'Something went wrong') {
       return fetch(url).then(response => {
@@ -1756,146 +1949,6 @@ Version: 1.0
         })
     };
     ```
-
-### Promises
-
-* An **object** that is used as a placeholder for the future result of an asynchronous operation
-
-* We no longer need to rely on events and callbacks passed into asynchronous functions to handle asynchronous results
-
-* Instead of nesting callbacks, we can chain promises for a sequence of asynchronous operations
-
-* A Promise is a JavaScript object that links producing code and consuming code
-
-* Lifecycle
-  * Build promises
-
-    * `Promise(function(resolve, reject) {})`
-
-      * It is primarily used to wrap callback-based APIs (the `executor`) that do not already support promises
-
-    * `Promise.resolve(value)`
-
-      * Returns a `Promise` object that is fulfilled with a given `value`
-
-    * `Promise.reject(error)`
-
-      * Returns a `Promise` object that is rejected with a given `error`
-
-    * Promisify callback functions
-
-      * So that we can chain all promises  (**callbacks converted to promise workflow**)
-  
-      ```javascript
-      // The para is the executor
-      const wait = (seconds) => new Promise(function(resolve) {
-          setTimeout(resolve, seconds * 1000);
-      });
-      wait(2).then(function() {console.log("I have waited for 2 seconds");});
-      ```
-
-  * ![promises](img\promises.png)
-
-  * Pending
-  
-    * Execute the executor (equivalent to callback execution)
-  
-  * Settled
-    * Asynchronous tasks are finished 
-  
-    * Fulfilled or Rejected
-  
-    * | myPromise.state | myPromise.result |
-      | :-------------- | :--------------- |
-      | "pending"       | `undefined`      |
-      | "fulfilled"     | a result value   |
-      | "rejected"      | an error object  |
-
-  * Consume promises
-
-    * Consuming promises is actually executing functions
-  
-    * `then()`, `catch()`, `finally()`
-  
-    * `async` and `await`
-    
-      * *`async `and `await` make promises easier to write*
-        * No more `then`
-        * **Asynchronous operation written in synchronous way**
-      * The keyword `async` before a function makes the function return a **promise** (**always fulfilled not rejected**)
-      * All functions invoked in `async` functions should be `async` not callback functions
-      * The `await` keyword can only be used inside an `async` function
-      * The `await` keyword makes the function pause the execution and wait for a resolved promise before it continues
-      * `await` returns **the fulfillment value of the promise** or `thenable`object, or, if the expression is not `thenable`, the expression's own value
-      * Use with error handling `try...catch`
-        * Rethrow the `error` in `catch` block will manually reject `async` function
-      
-      ```javascript
-      // Promisify geolocation
-      const getPosition = function () {
-        return new Promise(function (resolve, reject) {
-          navigator.geolocation.getCurrentPosition(resolve, reject);
-        });
-      };
-      
-      const whereAmI = async function () {
-        try {
-          // Geolocation
-          const pos = await getPosition();
-          const { latitude: lat, longitude: lng } = pos.coords;
-          // Reverse geocoding
-          const resGeo = await fetch(`https://geocode.xyz/${lat},${lng}?geoit=json`);
-          if (!resGeo.ok) throw new Error('Problem getting location data');
-          const dataGeo = await resGeo.json();
-          return `You are in ${dataGeo.city}, ${dataGeo.country}`;
-        } catch (err) {
-          // Reject promise returned from async function
-          throw err;
-        }
-      };
-      console.log('1: Will get location');
-      // const city = whereAmI();
-      // console.log(city);
-      // whereAmI()
-      //   .then(city => console.log(`2: ${city}`))
-      //   .catch(err => console.error(`2: ${err.message} 💥`))
-      //   .finally(() => console.log('3: Finished getting location'));
-      
-      // More async way
-      (async function () {
-        try {
-          const city = await whereAmI();
-          console.log(`2: ${city}`);
-        } catch (err) {
-          console.error(`2: ${err.message} 💥`);
-        }
-        console.log('3: Finished getting location');
-      })();
-      ```
-  
-* `Promise.all()`
-
-  * Used for running Promises in parallel
-  * Takes an iterable of promises as input and returns a single `Promise`
-  * This returned promise fulfills when all of the input's promises **fulfill** (including when an empty iterable is passed), with an array of the fulfillment values
-  * It rejects when any of the input's promises rejects, with this first rejection reason
-
-* `Promise.race()`
-
-  * Takes an iterable of promises as input and returns a single `Promise`
-  * This returned promise settles with the eventual state of the first promise that settles
-  * Usually use with a timer
-
-* `Promise.allSettled()`
-
-  * Takes an iterable of promises as input and returns a single `Promise`
-  * This returned promise fulfills when all of the input's promises **settle** (including when an empty iterable is passed), with an array of objects that describe the outcome of each promise
-
-* `Promise.any()`
-
-  * Takes an iterable of promises as input and returns a single `Promise`
-  * This returned promise fulfills when any of the input's promises fulfills, with this first fulfillment value
-  * It rejects when all of the input's promises reject (including when an empty iterable is passed), with an [`AggregateError`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/AggregateError) containing an array of rejection reasons
 
 
 ### The Event Loop
